@@ -15,6 +15,7 @@ drop_out = 0.5
 lr = 0.001
 max_epoch = 10
 lr_decay = 0.95
+epochs = 1
 
 label2id = {
     "O": 0,

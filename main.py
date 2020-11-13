@@ -1,13 +1,5 @@
-from data_process import Processor
-from Vocabulary import Vocabulary
-import config
-import numpy as np
-from data_loader import NERDataset
+import torch
 
 if __name__ == '__main__':
-    processor = Processor(config)
-    processor.data_process()
-    # processor.get_examples('sample')
-    vocab = Vocabulary(config)
-    vocab.get_vocab()
-    dataset = NERDataset(config.train_dir, vocab, config.label2id)
+    a = torch.tensor([2, 3]).fill_(0)
+    print(a)
