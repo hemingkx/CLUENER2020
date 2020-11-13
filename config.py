@@ -13,9 +13,9 @@ embedding_size = 128
 hidden_size = 384
 drop_out = 0.5
 lr = 0.001
-max_epoch = 10
-lr_decay = 0.95
-epochs = 1
+betas = (0.9, 0.999)
+epochs = 3
+gpu = '3'
 
 label2id = {
     "O": 0,

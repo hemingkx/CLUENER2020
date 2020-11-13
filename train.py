@@ -47,6 +47,11 @@ test_input = torch.tensor(input_array, dtype=torch.long)
 test_label = torch.tensor(label_array, dtype=torch.long)
 
 if __name__ == "__main__":
+    # 设置gpu为命令行参数指定的id
+    if config.gpu != '':
+        device = torch.device(f"cuda:{config.gpu}")
+    else:
+        device = torch.device("cpu")
     # 处理数据，分离文本和标签
     processor = Processor(config)
     processor.data_process()
@@ -63,32 +68,27 @@ if __name__ == "__main__":
                        drop_out=config.drop_out,
                        vocab_size=vocab.vocab_size(),
                        tagset_size=vocab.label_size())
+    model.to(device)
     # loss and optimizer
-    loss_function = nn.NLLLoss()
-    optimizer = optim.SGD(model.parameters(), lr=config.lr)
-
-    with torch.no_grad():
-        y_pred = model(test_input)
-        print(y_pred)
-        print(y_pred.size())
+    loss_function = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
     # start training
     for epoch in range(config.epochs):
+        # step number in one epoch: 336
         for idx, batch_samples in enumerate(data_loader):
-            if idx >= 100:
-                break
             x, y, lens = batch_samples
+            x = x.to(device)
+            y = y.to(device)
             model.zero_grad()
             y_pred = model.forward(x)
             y_pred = y_pred.permute(0, 2, 1)
+            # 计算梯度
             loss = loss_function(y_pred, y)
+            # 梯度反传
             loss.backward()
+            # 优化更新
             optimizer.step()
             optimizer.zero_grad()
-            if idx % 300 == 0:
-                print("epoch: ", epoch, ", index: ", ", loss: ", loss)
-    # print(idx)
-    print("Training end")
-    with torch.no_grad():
-        y_pred = model(test_input)
-        print(test_label)
-        print(y_pred)
+            if idx % 100 == 0:
+                print("epoch: ", epoch, ", index: ", idx, ", loss: ", loss)
+    print("Training Finished!")
