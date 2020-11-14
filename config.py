@@ -14,7 +14,7 @@ hidden_size = 384
 drop_out = 0.5
 lr = 0.001
 betas = (0.9, 0.999)
-epochs = 3
+epochs = 1
 gpu = '3'
 
 label2id = {

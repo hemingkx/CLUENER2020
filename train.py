@@ -8,6 +8,10 @@ from data_process import Processor
 from Vocabulary import Vocabulary
 from data_loader import NERDataset
 from model import BiLSTM_CRF
+from calculate import f1_score
+
+import numpy as np
+np.set_printoptions(threshold=np.inf)
 
 input_array = [[1642, 1291, 40, 2255, 970, 46, 124, 1604, 1915, 547, 0, 173,
                 303, 124, 1029, 52, 20, 2839, 2, 2255, 2078, 1553, 225, 540,
@@ -59,9 +63,12 @@ if __name__ == "__main__":
     vocab = Vocabulary(config)
     vocab.get_vocab()
     # build data_loader
-    dataset = NERDataset(config.train_dir, vocab, config.label2id)
-    data_loader = DataLoader(dataset, batch_size=config.batch_size,
-                             shuffle=True, collate_fn=dataset.collate_fn)
+    train_dataset = NERDataset(config.train_dir, vocab, config.label2id)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
+                              shuffle=True, collate_fn=train_dataset.collate_fn)
+    test_dataset = NERDataset(config.test_dir, vocab, config.label2id)
+    test_loader = DataLoader(test_dataset, batch_size=config.batch_size,
+                             shuffle=True, collate_fn=test_dataset.collate_fn)
     # model
     model = BiLSTM_CRF(embedding_size=config.embedding_size,
                        hidden_size=config.hidden_size,
@@ -72,16 +79,24 @@ if __name__ == "__main__":
     # loss and optimizer
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
+    with torch.no_grad():
+        test_input = test_input.to(device)
+        tag_scores = model.forward(test_input)
+        tag_scores = tag_scores.argmax(dim=2)
+        print(test_label)
+        print(np.array(tag_scores.cpu()))
     # start training
     for epoch in range(config.epochs):
         # step number in one epoch: 336
-        for idx, batch_samples in enumerate(data_loader):
+        for idx, batch_samples in enumerate(train_loader):
             x, y, lens = batch_samples
             x = x.to(device)
             y = y.to(device)
             model.zero_grad()
             y_pred = model.forward(x)
             y_pred = y_pred.permute(0, 2, 1)
+            # softmax取最大值
+            # y_pred = y_pred.argmax(dim=2)
             # 计算梯度
             loss = loss_function(y_pred, y)
             # 梯度反传
@@ -91,4 +106,14 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             if idx % 100 == 0:
                 print("epoch: ", epoch, ", index: ", idx, ", loss: ", loss)
+                with torch.no_grad():
+                    f1 = f1_score(test_loader, vocab.id2word, vocab.id2label, model, device)
+                    print("epoch: ", epoch, ", f1 score: ", f1)
     print("Training Finished!")
+    with torch.no_grad():
+        test_input = test_input.to(device)
+        tag_scores = model.forward(test_input)
+        tag_scores = tag_scores.argmax(dim=2)
+        print(test_label)
+        print(np.array(tag_scores.cpu()))
+
