@@ -32,6 +32,7 @@ class BiLSTM_CRF(nn.Module):
         features = self.classifier(sequence_output)
         # softmax??
         # batch_size * seq_length *
-        tag_scores = F.softmax(features, dim=2)
+        tag_scores = features
+        #tag_scores = F.softmax(features, dim=2)
         # return features
         return tag_scores

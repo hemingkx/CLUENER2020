@@ -9,8 +9,10 @@ from Vocabulary import Vocabulary
 from data_loader import NERDataset
 from model import BiLSTM_CRF
 from calculate import f1_score
+# from sklearn.cross_validation import train_test_split
 
 import numpy as np
+# 打印完整的numpy array
 np.set_printoptions(threshold=np.inf)
 
 input_array = [[1642, 1291, 40, 2255, 970, 46, 124, 1604, 1915, 547, 0, 173,
@@ -90,13 +92,12 @@ if __name__ == "__main__":
         # step number in one epoch: 336
         for idx, batch_samples in enumerate(train_loader):
             x, y, lens = batch_samples
+            # print("y: ", np.array(y))
             x = x.to(device)
             y = y.to(device)
             model.zero_grad()
             y_pred = model.forward(x)
             y_pred = y_pred.permute(0, 2, 1)
-            # softmax取最大值
-            # y_pred = y_pred.argmax(dim=2)
             # 计算梯度
             loss = loss_function(y_pred, y)
             # 梯度反传
@@ -105,10 +106,20 @@ if __name__ == "__main__":
             optimizer.step()
             optimizer.zero_grad()
             if idx % 100 == 0:
-                print("epoch: ", epoch, ", index: ", idx, ", loss: ", loss)
                 with torch.no_grad():
+                    for _, test_samples in enumerate(test_loader):
+                        x_test, y_test, lens_ = test_samples
+                        x_test = x_test.to(device)
+                        y_test = y_test.to(device)
+                        model.zero_grad()
+                        y_pred = model.forward(x_test)
+                        y_pred = y_pred.permute(0, 2, 1)
+                        # 计算梯度
+                        test_loss = loss_function(y_pred, y_test)
+                    # f1_score calculation
                     f1 = f1_score(test_loader, vocab.id2word, vocab.id2label, model, device)
-                    print("epoch: ", epoch, ", f1 score: ", f1)
+                print("epoch: ", epoch, ", index: ", idx, ", train loss: ", loss.item(),
+                      ", f1 score: ", f1, ", test loss: ", test_loss.item())
     print("Training Finished!")
     with torch.no_grad():
         test_input = test_input.to(device)
