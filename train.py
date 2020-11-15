@@ -9,7 +9,7 @@ from Vocabulary import Vocabulary
 from data_loader import NERDataset
 from model import BiLSTM_CRF
 from calculate import f1_score
-# from sklearn.cross_validation import train_test_split
+from dev_split import dev_split
 
 import numpy as np
 # 打印完整的numpy array
@@ -64,13 +64,16 @@ if __name__ == "__main__":
     # 建立词表
     vocab = Vocabulary(config)
     vocab.get_vocab()
+    # 分离出验证集
+    word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
+    # build dataset
+    train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
+    dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
     # build data_loader
-    train_dataset = NERDataset(config.train_dir, vocab, config.label2id)
     train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
                               shuffle=True, collate_fn=train_dataset.collate_fn)
-    test_dataset = NERDataset(config.test_dir, vocab, config.label2id)
-    test_loader = DataLoader(test_dataset, batch_size=config.batch_size,
-                             shuffle=True, collate_fn=test_dataset.collate_fn)
+    dev_loader = DataLoader(dev_dataset, batch_size=config.batch_size,
+                            shuffle=True, collate_fn=dev_dataset.collate_fn)
     # model
     model = BiLSTM_CRF(embedding_size=config.embedding_size,
                        hidden_size=config.hidden_size,
@@ -107,7 +110,7 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             if idx % 100 == 0:
                 with torch.no_grad():
-                    for _, test_samples in enumerate(test_loader):
+                    for _, test_samples in enumerate(dev_loader):
                         x_test, y_test, lens_ = test_samples
                         x_test = x_test.to(device)
                         y_test = y_test.to(device)
@@ -117,7 +120,7 @@ if __name__ == "__main__":
                         # 计算梯度
                         test_loss = loss_function(y_pred, y_test)
                     # f1_score calculation
-                    f1 = f1_score(test_loader, vocab.id2word, vocab.id2label, model, device)
+                    f1 = f1_score(dev_loader, vocab.id2word, vocab.id2label, model, device)
                 print("epoch: ", epoch, ", index: ", idx, ", train loss: ", loss.item(),
                       ", f1 score: ", f1, ", test loss: ", test_loss.item())
     print("Training Finished!")

@@ -4,16 +4,14 @@ import torch
 
 
 class NERDataset(Dataset):
-    def __init__(self, dataset_dir, vocab, label2id):
+    def __init__(self, words, labels, vocab, label2id):
         self.vocab = vocab
-        self.dataset = self.preprocess(np.load(dataset_dir, allow_pickle=True))
+        self.dataset = self.preprocess(words, labels)
         self.label2id = label2id
 
-    def preprocess(self, data):
+    def preprocess(self, words, labels):
         """convert the data to ids"""
         processed = []
-        words = data["words"]
-        labels = data["labels"]
         for (word, label) in zip(words, labels):
             word_id = [self.vocab.word_id(w_) for w_ in word]
             label_id = [self.vocab.label_id(l_) for l_ in label]
