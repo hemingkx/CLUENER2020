@@ -8,6 +8,8 @@ vocab_path = data_dir + 'vocab.npz'
 
 max_vocab_size = 50000000000
 
+n_split = 5
+dev_split_size = 0.1
 batch_size = 32
 embedding_size = 128
 hidden_size = 384

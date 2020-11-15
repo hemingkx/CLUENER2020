@@ -3,12 +3,14 @@ import torch.nn as nn
 from torch import optim
 
 import config
+import numpy as np
 from model import BiLSTM_CRF
+from dev_split import dev_split
 from data_process import Processor
 from Vocabulary import Vocabulary
-from dev_split import dev_split
 from data_loader import NERDataset
 from torch.utils.data import DataLoader
+from sklearn.model_selection import KFold
 from train import train, test, sample_test
 
 input_array = [[1642, 1291, 40, 2255, 970, 46, 124, 1604, 1915, 547, 0, 173,
@@ -49,7 +51,44 @@ test_input = torch.tensor(input_array, dtype=torch.long)
 test_label = torch.tensor(label_array, dtype=torch.long)
 
 
-def run():
+def k_fold_run():
+    """train with k-fold"""
+    # 设置gpu为命令行参数指定的id
+    if config.gpu != '':
+        device = torch.device(f"cuda:{config.gpu}")
+    else:
+        device = torch.device("cpu")
+    # 处理数据，分离文本和标签
+    processor = Processor(config)
+    processor.data_process()
+    # 建立词表
+    vocab = Vocabulary(config)
+    vocab.get_vocab()
+    # 分离出验证集
+    data = np.load(config.train_dir, allow_pickle=True)
+    words = data["words"]
+    labels = data["labels"]
+    kf = KFold(n_splits=config.n_split)
+    kf_data = kf.split(words, labels)
+    kf_index = 0
+    total_test_loss = 0
+    total_f1 = 0
+    for train_index, dev_index in kf_data:
+        kf_index += 1
+        word_train = words[train_index]
+        label_train = labels[train_index]
+        word_dev = words[dev_index]
+        label_dev = labels[dev_index]
+        test_loss, f1 = run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index)
+        total_test_loss += test_loss
+        total_f1 += f1
+    average_test_loss = float(total_test_loss)/config.n_split
+    average_f1 = float(total_f1)/config.n_split
+    print("Average test loss: ", average_test_loss, ", average f1 score: ", average_f1)
+
+
+def simple_run():
+    """train without k-fold"""
     # 设置gpu为命令行参数指定的id
     if config.gpu != '':
         device = torch.device(f"cuda:{config.gpu}")
@@ -63,6 +102,13 @@ def run():
     vocab.get_vocab()
     # 分离出验证集
     word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
+    # simple run without k-fold
+    kf_index = 1
+    run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index)
+
+
+def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
+    # word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
     # build dataset
     train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
     dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
@@ -81,15 +127,14 @@ def run():
     # loss and optimizer
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
-    with torch.no_grad():
-        sample_test(test_input, test_label, model, device)
     # train and test
-    train(train_loader, dev_loader, vocab, model, loss_function, optimizer, device)
+    train(train_loader, dev_loader, vocab, model, loss_function, optimizer, device, kf_index)
     with torch.no_grad():
         # test on the final test set
-        test(config.test_dir, vocab, model, loss_function, device)
+        test_loss, f1 = test(config.test_dir, vocab, model, loss_function, device, kf_index)
         sample_test(test_input, test_label, model, device)
+    return test_loss, f1
 
 
 if __name__ == '__main__':
-    run()
+    simple_run()

@@ -11,7 +11,7 @@ import numpy as np
 np.set_printoptions(threshold=np.inf)
 
 
-def train(train_loader, dev_loader, vocab, model, loss_function, optimizer, device):
+def train(train_loader, dev_loader, vocab, model, loss_function, optimizer, device, kf_index):
     """train the model and test model performance"""
     # start training
     for epoch in range(config.epochs):
@@ -35,7 +35,7 @@ def train(train_loader, dev_loader, vocab, model, loss_function, optimizer, devi
                 with torch.no_grad():
                     # dev loss calculation
                     dev_loss, f1 = dev(dev_loader, vocab, model, loss_function, device)
-                print("epoch: ", epoch, ", index: ", idx, ", train loss: ", loss.item(),
+                print("Kf epoch: ", kf_index, ", epoch: ", epoch, ", index: ", idx, ", train loss: ", loss.item(),
                       ", f1 score: ", f1, ", dev loss: ", dev_loss)
     print("Training Finished!")
 
@@ -67,7 +67,7 @@ def dev(dev_loader, vocab, model, loss_function, device):
     return dev_loss, f1
 
 
-def test(dataset_dir, vocab, model, loss_function, device):
+def test(dataset_dir, vocab, model, loss_function, device, kf_index):
     """test model performance on the final test set"""
     data = np.load(dataset_dir, allow_pickle=True)
     word_test = data["words"]
@@ -78,4 +78,5 @@ def test(dataset_dir, vocab, model, loss_function, device):
     test_loader = DataLoader(test_dataset, batch_size=config.batch_size,
                              shuffle=True, collate_fn=test_dataset.collate_fn)
     test_loss, f1 = dev(test_loader, vocab, model, loss_function, device)
-    print("final test loss: ", test_loss, ", f1 score: ", f1)
+    print("Kf epoch: ", kf_index, ", final test loss: ", test_loss, ", f1 score: ", f1)
+    return test_loss, f1
