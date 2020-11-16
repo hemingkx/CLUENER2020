@@ -28,9 +28,11 @@ class NERDataset(Dataset):
 
     @staticmethod
     def get_long_tensor(tokens_list, batch_size):
-        """convert id strain to tensor"""
+        """padding sentence and convert into LongTensor"""
+        # get max len of sentences
         token_len = max([len(x) for x in tokens_list])
         tokens = torch.LongTensor(batch_size, token_len).fill_(0)
+        # padding
         for i, s in enumerate(tokens_list):
             tokens[i, :len(s)] = torch.LongTensor(s)
         return tokens

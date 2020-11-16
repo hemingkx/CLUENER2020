@@ -108,7 +108,6 @@ def simple_run():
 
 
 def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
-    # word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
     # build dataset
     train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
     dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
@@ -122,7 +121,7 @@ def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
                        hidden_size=config.hidden_size,
                        drop_out=config.drop_out,
                        vocab_size=vocab.vocab_size(),
-                       tagset_size=vocab.label_size())
+                       target_size=vocab.label_size())
     model.to(device)
     # loss and optimizer
     loss_function = nn.CrossEntropyLoss()

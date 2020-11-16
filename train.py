@@ -18,7 +18,6 @@ def train(train_loader, dev_loader, vocab, model, loss_function, optimizer, devi
         # step number in one epoch: 336
         for idx, batch_samples in enumerate(train_loader):
             x, y, lens = batch_samples
-            # print("y: ", np.array(y))
             x = x.to(device)
             y = y.to(device)
             model.zero_grad()
