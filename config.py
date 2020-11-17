@@ -17,7 +17,7 @@ drop_out = 0.5
 lr = 0.001
 betas = (0.9, 0.999)
 epochs = 10
-gpu = '2'
+gpu = '3'
 
 label2id = {
     "O": 0,

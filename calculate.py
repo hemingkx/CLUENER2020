@@ -1,3 +1,6 @@
+import torch
+
+
 def find_entities(xs, ys, id2word, id2label, label_type, res=[]):
     """get entities in one sentence x with label y"""
     entity = []
@@ -47,6 +50,28 @@ def f1_score(data_loader, id2word, id2label, model, device):
         labels = labels.to(device)
         label_pred = model.forward(sentences)
         entity_pred = find_entities(sentences, label_pred, id2word, id2label, "pred", entity_pred)
+        entity_label = find_entities(sentences, labels, id2word, id2label, "label", entity_label)
+    entity_right = [i for i in entity_pred if i in entity_label]
+    print("entity_pred: ", len(entity_pred), "entity_label: ", len(entity_label), "entity_right: ", len(entity_right))
+    if len(entity_right) != 0:
+        acc = float(len(entity_right)) / len(entity_pred)
+        recall = float(len(entity_right)) / len(entity_label)
+        return (2 * acc * recall) / (acc + recall)
+    else:
+        return 0
+
+
+def f1_crf_score(data_loader, id2word, id2label, model, device):
+    entity_pred = []
+    entity_label = []
+    for idx, batch_samples in enumerate(data_loader):
+        sentences, labels, lens = batch_samples
+        sentences = sentences.to(device)
+        labels = labels.to(device)
+        _, label_pred = model.forward(sentences)
+        label_pred = torch.tensor(label_pred, dtype=torch.long)
+        # crf已经解码过了，不用从softmax转换，所以用"label"标签
+        entity_pred = find_entities(sentences, label_pred, id2word, id2label, "label", entity_pred)
         entity_label = find_entities(sentences, labels, id2word, id2label, "label", entity_label)
     entity_right = [i for i in entity_pred if i in entity_label]
     print("entity_pred: ", len(entity_pred), "entity_label: ", len(entity_label), "entity_right: ", len(entity_right))

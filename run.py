@@ -5,13 +5,14 @@ from torch import optim
 import config
 import numpy as np
 from model import BiLSTM_CRF
+from crf import BiLSTM_CRF_MODIFY_PARALLEL
 from dev_split import dev_split
 from data_process import Processor
 from Vocabulary import Vocabulary
 from data_loader import NERDataset
 from torch.utils.data import DataLoader
 from sklearn.model_selection import KFold
-from train import train, test, sample_test
+from train import train, test, sample_test, crf_train, crf_test
 
 input_array = [[1642, 1291, 40, 2255, 970, 46, 124, 1604, 1915, 547, 0, 173,
                 303, 124, 1029, 52, 20, 2839, 2, 2255, 2078, 1553, 225, 540,
@@ -107,6 +108,45 @@ def simple_run():
     run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index)
 
 
+def crf_simple_run():
+    """train with crf"""
+    # 设置gpu为命令行参数指定的id
+    if config.gpu != '':
+        device = torch.device(f"cuda:{config.gpu}")
+    else:
+        device = torch.device("cpu")
+    # 处理数据，分离文本和标签
+    processor = Processor(config)
+    processor.data_process()
+    # 建立词表
+    vocab = Vocabulary(config)
+    vocab.get_vocab()
+    # 分离出验证集
+    word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
+    # simple run without k-fold
+    crf_run(word_train, label_train, word_dev, label_dev, vocab, device)
+
+
+def crf_run(word_train, label_train, word_dev, label_dev, vocab, device):
+    # build dataset
+    train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
+    dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
+    # build data_loader
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
+                              shuffle=True, collate_fn=train_dataset.collate_fn)
+    dev_loader = DataLoader(dev_dataset, batch_size=config.batch_size,
+                            shuffle=True, collate_fn=dev_dataset.collate_fn)
+    # model
+    model = BiLSTM_CRF_MODIFY_PARALLEL(vocab.vocab_size(), vocab.label2id,
+                                       config.embedding_size, config.hidden_size, device)
+    model.to(device)
+    # loss and optimizer
+    optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
+    # train and test
+    crf_train(train_loader, dev_loader, vocab, model, optimizer, device)
+    crf_test(config.test_dir, vocab, model, device)
+
+
 def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
     # build dataset
     train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
@@ -136,4 +176,4 @@ def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
 
 
 if __name__ == '__main__':
-    simple_run()
+    crf_simple_run()
