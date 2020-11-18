@@ -1,2 +1,2 @@
-# CLUENER2020
-First homework for Calculative Linguistics (2020Fall)
+# BiLSTM-CRF
+CLUENER2020 with BiLSTM-CRF (manually implemented CRF).
