@@ -1,0 +1,14 @@
+{
+    "full_finetuning": true,
+    "max_len": 135,
+
+    "learning_rate": 5e-5,
+    "weight_decay": 0.01,
+    "clip_grad": 5,
+
+    "batch_size": 32,
+    "epoch_num": 50,
+    "min_epoch_num": 5,
+    "patience": 0.02,
+    "patience_num": 5
+}
