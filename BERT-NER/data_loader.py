@@ -1,177 +1,107 @@
-"""Data loader"""
-import os
 import torch
-import utils
-import random
 import numpy as np
 from transformers import BertTokenizer
+from torch.utils.data import Dataset
 
 
-class DataLoader(object):
-    def __init__(self, data_dir, bert_class, params, token_pad_idx=0, tag_pad_idx=-1):
-        self.data_dir = data_dir
-        self.batch_size = params.batch_size
-        self.max_len = params.max_len
-        self.device = params.device
-        self.seed = params.seed
-        self.token_pad_idx = token_pad_idx
-        self.tag_pad_idx = tag_pad_idx
+class NERDataset(Dataset):
+    def __init__(self, words, labels, config, word_pad_idx=0, label_pad_idx=-1):
+        self.tokenizer = BertTokenizer.from_pretrained(config.bert_model, do_lower_case=True)
+        self.label2id = config.label2id
+        self.id2label = {_id: _label for _label, _id in list(config.label2id.items())}
+        self.dataset = self.preprocess(words, labels)
+        self.word_pad_idx = word_pad_idx
+        self.label_pad_idx = label_pad_idx
+        self.device = config.device
 
-        tags = self.load_tags()
-        self.tag2idx = {tag: idx for idx, tag in enumerate(tags)}
-        self.idx2tag = {idx: tag for idx, tag in enumerate(tags)}
-        params.tag2idx = self.tag2idx
-        params.idx2tag = self.idx2tag
-
-        self.tokenizer = BertTokenizer.from_pretrained(bert_class, do_lower_case=False)
-
-    def load_tags(self):
-        tags = []
-        file_path = os.path.join(self.data_dir, 'tags.txt')
-        with open(file_path, 'r') as file:
-            for tag in file:
-                tags.append(tag.strip())
-        return tags
-
-    def load_sentences_tags(self, sentences_file, tags_file, d):
-        """Loads sentences and tags from their corresponding files. 
-            Maps tokens and tags to their indices and stores them in the provided dict d.
+    def preprocess(self, origin_sentences, origin_labels):
         """
+        Maps tokens and tags to their indices and stores them in the dict data.
+        examples: 
+            word:['[CLS]', '浙', '商', '银', '行', '企', '业', '信', '贷', '部']
+            sentence:([101, 3851, 1555, 7213, 6121, 821, 689, 928, 6587, 6956],
+                        array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10]))
+            label:[3, 13, 13, 13, 0, 0, 0, 0, 0]
+        """
+        data = []
         sentences = []
-        tags = []
-                    
-        with open(sentences_file, 'r') as file:
-            for line in file:
-                # replace each token by its index
-                tokens = line.strip().split(' ')
-                subwords = list(map(self.tokenizer.tokenize, tokens))
-                subword_lengths = list(map(len, subwords))
-                subwords = ['[CLS]'] + [item for indices in subwords for item in indices]
-                token_start_idxs = 1 + np.cumsum([0] + subword_lengths[:-1])
-                sentences.append((self.tokenizer.convert_tokens_to_ids(subwords),token_start_idxs))
-        if tags_file != None:
-            with open(tags_file, 'r') as file:
-                for line in file:
-                    # replace each tag by its index
-                    tag_seq = [self.tag2idx.get(tag) for tag in line.strip().split(' ')]
-                    tags.append(tag_seq)
-
-            # checks to ensure there is a tag for each token
-            assert len(sentences) == len(tags)
-            for i in range(len(sentences)):
-                assert len(tags[i]) == len(sentences[i][-1])
-
-            d['tags'] = tags
-
-        # storing sentences and tags in dict d
-        d['data'] = sentences
-        d['size'] = len(sentences)
-
-    def load_data(self, data_type):
-        """Loads the data for each type in types from data_dir.
-
-        Args:
-            data_type: (str) has one of 'train', 'val', 'test' depending on which data is required.
-        Returns:
-            data: (dict) contains the data with tags for each type in types.
-        """
-        data = {}
-        
-        if data_type in ['train', 'val', 'test']:
-            print('Loading ' + data_type)
-            sentences_file = os.path.join(self.data_dir, data_type, 'sentences.txt')
-            tags_path = os.path.join(self.data_dir, data_type, 'tags.txt')
-            self.load_sentences_tags(sentences_file, tags_path, data)
-        elif data_type == 'interactive':
-            sentences_file = os.path.join(self.data_dir, data_type, 'sentences.txt')
-            self.load_sentences_tags(sentences_file, tags_file=None, d=data)   
-        else:
-            raise ValueError("data type not in ['train', 'val', 'test']")
+        labels = []
+        for line in origin_sentences:
+            # replace each token by its index
+            # we can not use encode_plus because our sentences are aligned to labels in list type
+            words = []
+            word_lens = []
+            for token in line:
+                words.append(self.tokenizer.tokenize(token))
+                word_lens.append(len(token))
+            # 变成单个字的列表，开头加上[CLS]
+            words = ['[CLS]'] + [item for token in words for item in token]
+            token_start_idxs = 1 + np.cumsum([0] + word_lens[:-1])
+            sentences.append((self.tokenizer.convert_tokens_to_ids(words), token_start_idxs))
+        for tag in origin_labels:
+            label_id = [self.label2id.get(t) for t in tag]
+            labels.append(label_id)
+        for sentence, label in zip(sentences, labels):
+            data.append((sentence, label))
         return data
 
-    def data_iterator(self, data, shuffle=False):
-        """Returns a generator that yields batches data with tags.
+    def __getitem__(self, idx):
+        """sample data to get batch"""
+        word = self.dataset[idx][0]
+        label = self.dataset[idx][1]
+        return [word, label]
 
-        Args:
-            data: (dict) contains data which has keys 'data', 'tags' and 'size'
-            shuffle: (bool) whether the data should be shuffled
-            
-        Yields:
-            batch_data: (tensor) shape: (batch_size, max_len)
-            batch_tags: (tensor) shape: (batch_size, max_len)
+    def __len__(self):
+        """get dataset size"""
+        return len(self.dataset)
+
+    def collate_fn(self, batch):
         """
+        process batch data, including:
+            1. padding: 将每个batch的data padding到同一长度（batch中最长的data长度）
+            2. aligning: 找到每个sentence sequence里面有label项，文本与label对齐
+            3. tensor：转化为tensor
+        """
+        sentences = [x[0] for x in batch]
+        labels = [x[1] for x in batch]
 
-        # make a list that decides the order in which we go over the data- this avoids explicit shuffling of data
-        order = list(range(data['size']))
-        if shuffle:
-            random.seed(self.seed)
-            random.shuffle(order)
-        
-        interMode = False if 'tags' in data else True
+        # batch length
+        batch_len = len(sentences)
 
-        if data['size'] % self.batch_size == 0:
-            BATCH_NUM = data['size']//self.batch_size
-        else:
-            BATCH_NUM = data['size']//self.batch_size + 1
+        # compute length of longest sentence in batch
+        max_len = max([len(s[0]) for s in sentences])
+        max_label_len = 0
+
+        # padding data 初始化
+        batch_data = self.word_pad_idx * np.ones((batch_len, max_len))
+        batch_label_starts = []
+
+        # padding and aligning
+        for j in range(batch_len):
+            cur_len = len(sentences[j][0])
+            batch_data[j][:cur_len] = sentences[j][0]
+            # 找到有标签的数据的index（[CLS]不算）
+            label_start_idx = sentences[j][-1]
+            label_starts = np.zeros(max_len)
+            label_starts[[idx for idx in label_start_idx if idx < max_len]] = 1
+            batch_label_starts.append(label_starts)
+            max_label_len = max(int(sum(label_starts)), max_label_len)
+
+        # padding label
+        batch_labels = self.label_pad_idx * np.ones((batch_len, max_label_len))
+        for j in range(batch_len):
+            cur_tags_len = len(labels[j])
+            batch_labels[j][:cur_tags_len] = labels[j]
+
+        # convert data to torch LongTensors
+        batch_data = torch.tensor(batch_data, dtype=torch.long)
+        batch_label_starts = torch.tensor(batch_label_starts, dtype=torch.long)
+        batch_labels = torch.tensor(batch_labels, dtype=torch.long)
+
+        # shift tensors to GPU if available
+        batch_data, batch_label_starts = batch_data.to(self.device), batch_label_starts.to(self.device)
+        batch_labels = batch_labels.to(self.device)
+        return [batch_data, batch_label_starts, batch_labels]
 
 
-        # one pass over data
-        for i in range(BATCH_NUM):
-            # fetch sentences and tags
-            if i * self.batch_size < data['size'] < (i+1) * self.batch_size:
-                sentences = [data['data'][idx] for idx in order[i*self.batch_size:]]
-                if not interMode:
-                    tags = [data['tags'][idx] for idx in order[i*self.batch_size:]]
-            else:
-                sentences = [data['data'][idx] for idx in order[i*self.batch_size:(i+1)*self.batch_size]]
-                if not interMode:
-                    tags = [data['tags'][idx] for idx in order[i*self.batch_size:(i+1)*self.batch_size]]
 
-            # batch length
-            batch_len = len(sentences)
-
-            # compute length of longest sentence in batch
-            batch_max_subwords_len = max([len(s[0]) for s in sentences])
-            max_subwords_len = min(batch_max_subwords_len, self.max_len)
-            max_token_len = 0
-
-
-            # prepare a numpy array with the data, initialising the data with pad_idx
-            batch_data = self.token_pad_idx * np.ones((batch_len, max_subwords_len))
-            batch_token_starts = []
-            
-            # copy the data to the numpy array
-            for j in range(batch_len):
-                cur_subwords_len = len(sentences[j][0])
-                if cur_subwords_len <= max_subwords_len:
-                    batch_data[j][:cur_subwords_len] = sentences[j][0]
-                else:
-                    batch_data[j] = sentences[j][0][:max_subwords_len]
-                token_start_idx = sentences[j][-1]
-                token_starts = np.zeros(max_subwords_len)
-                token_starts[[idx for idx in token_start_idx if idx < max_subwords_len]] = 1
-                batch_token_starts.append(token_starts)
-                max_token_len = max(int(sum(token_starts)), max_token_len)
-            
-            if not interMode:
-                batch_tags = self.tag_pad_idx * np.ones((batch_len, max_token_len))
-                for j in range(batch_len):
-                    cur_tags_len = len(tags[j])  
-                    if cur_tags_len <= max_token_len:
-                        batch_tags[j][:cur_tags_len] = tags[j]
-                    else:
-                        batch_tags[j] = tags[j][:max_token_len]
-            
-            # since all data are indices, we convert them to torch LongTensors
-            batch_data = torch.tensor(batch_data, dtype=torch.long)
-            batch_token_starts = torch.tensor(batch_token_starts, dtype=torch.long)
-            if not interMode:
-                batch_tags = torch.tensor(batch_tags, dtype=torch.long)
-
-            # shift tensors to GPU if available
-            batch_data, batch_token_starts = batch_data.to(self.device), batch_token_starts.to(self.device)
-            if not interMode:
-                batch_tags = batch_tags.to(self.device)
-                yield batch_data, batch_token_starts, batch_tags
-            else:
-                yield batch_data, batch_token_starts

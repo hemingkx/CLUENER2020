@@ -1,23 +1,39 @@
 import os
+import torch
 
 data_dir = os.getcwd() + '/data/clue/'
 train_dir = data_dir + 'train.npz'
 test_dir = data_dir + 'test.npz'
 files = ['train', 'test']
-vocab_path = data_dir + 'vocab.npz'
+bert_model = 'pretrained_bert_models/bert-base-chinese/'
+model_dir = os.getcwd() + '/experiments/clue/'
 
-max_vocab_size = 50000000000
+# 训练集、验证集划分比例
+dev_split_size = 0.05
 
-n_split = 5
-dev_split_size = 0.1
+# 是否加载训练好的NER模型
+load_before = False
+
+# 是否对整个BERT进行fine tuning
+full_fine_tuning = True
+
+# hyper-parameter
+learning_rate = 5e-5
+weight_decay = 0.01
+clip_grad = 5
+
 batch_size = 32
-embedding_size = 128
-hidden_size = 384
-drop_out = 0.5
-lr = 0.001
-betas = (0.9, 0.999)
-epochs = 10
-gpu = '2'
+epoch_num = 50
+min_epoch_num = 5
+patience = 0.0002
+patience_num = 5
+
+gpu = '3'
+
+if gpu != '':
+    device = torch.device(f"cuda:{gpu}")
+else:
+    device = torch.device("cpu")
 
 label2id = {
     "O": 0,
@@ -50,12 +66,7 @@ label2id = {
     'S-name': 27,
     'S-organization': 28,
     'S-position': 29,
-    'S-scene': 30,
-    "<START>": 31,
-    "<STOP>": 32
+    'S-scene': 30
 }
 
 id2label = {_id: _label for _label, _id in list(label2id.items())}
-
-if __name__ == '__main__':
-    print(data_dir)
