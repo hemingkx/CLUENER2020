@@ -42,6 +42,25 @@ def test():
     print("test loss: ", val_metrics['loss'], ", f1 score: ", val_f1)
 
 
+def load_dev(mode):
+    if mode == 'train':
+        # 分离出验证集
+        word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
+    elif mode == 'test':
+        train_data = np.load(config.train_dir, allow_pickle=True)
+        dev_data = np.load(config.test_dir, allow_pickle=True)
+        word_train = train_data["words"]
+        label_train = train_data["labels"]
+        word_dev = dev_data["words"]
+        label_dev = dev_data["labels"]
+    else:
+        word_train = None
+        label_train = None
+        word_dev = None
+        label_dev = None
+    return word_train, word_dev, label_train, label_dev
+
+
 def run():
     """train the model"""
     # 处理数据，分离文本和标签
@@ -49,7 +68,7 @@ def run():
     processor.process()
     print("--------Process Done!--------")
     # 分离出验证集
-    word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
+    word_train, word_dev, label_train, label_dev = load_dev('test')
     # build dataset
     train_dataset = NERDataset(word_train, label_train, config)
     dev_dataset = NERDataset(word_dev, label_dev, config)

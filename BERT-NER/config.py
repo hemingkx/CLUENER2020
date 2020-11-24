@@ -5,7 +5,8 @@ data_dir = os.getcwd() + '/data/clue/'
 train_dir = data_dir + 'train.npz'
 test_dir = data_dir + 'test.npz'
 files = ['train', 'test']
-bert_model = 'pretrained_bert_models/bert-base-chinese/'
+# bert_model = 'pretrained_bert_models/bert-base-chinese/'
+bert_model = 'pretrained_bert_models/chinese_roberta_wwm_large_ext/'
 model_dir = os.getcwd() + '/experiments/clue/'
 
 # 训练集、验证集划分比例
