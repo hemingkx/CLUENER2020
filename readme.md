@@ -4,4 +4,4 @@
 
 - BiLSTM-CRF: BiLSTM with manually implemented CRF, f1-score 0.65 after 10 epoch
 - BiLSTM-torchcrf: BiLSTM with torchcrf
-- BERT-NER：Bert with linear classifier
+- BERT-NER：Bert with linear classifier，test f1 0.7607
