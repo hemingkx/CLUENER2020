@@ -6,4 +6,4 @@
 - BiLSTM-torchcrf: BiLSTM with torchcrf
 - BERT-NER：Bert with linear classifier，test f1 0.7607
 - BERT-CRF-NER：Bert-crf with linear classifier，test f1 0.7714
-- BERT-LSTM-CRF-NER：Bert-LSTM-crf，test f1 0.7777
+- BERT-LSTM-CRF-NER：Bert-LSTM-crf，test f1 0.7845
