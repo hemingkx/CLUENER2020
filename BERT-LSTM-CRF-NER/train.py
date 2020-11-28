@@ -1,6 +1,6 @@
 import torch
+import logging
 import torch.nn as nn
-import numpy as np
 from tqdm import tqdm
 
 import config
@@ -28,7 +28,8 @@ def train_epoch(train_loader, model, optimizer, scheduler, epoch):
         # performs updates using calculated gradients
         optimizer.step()
         scheduler.step()
-    print("Epoch: ", epoch, ", train loss: ", float(train_losses) / len(train_loader))
+    train_loss = float(train_losses) / len(train_loader)
+    logging.info("Epoch: {}, train loss: {}".format(epoch, train_loss))
 
 
 def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
@@ -37,20 +38,20 @@ def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
     if model_dir is not None and config.load_before:
         model = BertNER.from_pretrained(model_dir)
         model.to(config.device)
-        print("--------Load model from ", model_dir, "--------")
+        logging.info("--------Load model from {}--------".format(model_dir))
     best_val_f1 = 0.0
     patience_counter = 0
     # start training
     for epoch in range(1, config.epoch_num + 1):
         train_epoch(train_loader, model, optimizer, scheduler, epoch)
-        val_metrics = evaluate(dev_loader, model)
+        val_metrics = evaluate(dev_loader, model, mode='dev')
         val_f1 = val_metrics['f1']
-        print("Epoch: ", epoch, ", dev loss: ", val_metrics['loss'], ", f1 score: ", val_f1)
+        logging.info("Epoch: {}, dev loss: {}, f1 score: {}".format(epoch, val_metrics['loss'], val_f1))
         improve_f1 = val_f1 - best_val_f1
         if improve_f1 > 1e-5:
             best_val_f1 = val_f1
             model.save_pretrained(model_dir)
-            print("--------Save best model!--------")
+            logging.info("--------Save best model!--------")
             if improve_f1 < config.patience:
                 patience_counter += 1
             else:
@@ -59,12 +60,12 @@ def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
             patience_counter += 1
         # Early stopping and logging best f1
         if (patience_counter >= config.patience_num and epoch > config.min_epoch_num) or epoch == config.epoch_num:
-            print("Best val f1: ", best_val_f1)
+            logging.info("Best val f1: {}".format(best_val_f1))
             break
-    print("Training Finished!")
+    logging.info("Training Finished!")
 
 
-def evaluate(dev_loader, model):
+def evaluate(dev_loader, model, mode='dev'):
     # set model to evaluation mode
     model.eval()
 
@@ -97,7 +98,12 @@ def evaluate(dev_loader, model):
 
     # logging loss, f1 and report
     metrics = {}
-    f1 = f1_score(true_tags, pred_tags)
+    if mode == 'dev':
+        f1 = f1_score(true_tags, pred_tags, mode)
+        metrics['f1'] = f1
+    else:
+        f1_labels, f1 = f1_score(true_tags, pred_tags, mode)
+        metrics['f1_labels'] = f1_labels
+        metrics['f1'] = f1
     metrics['loss'] = float(dev_losses) / len(dev_loader)
-    metrics['f1'] = f1
     return metrics

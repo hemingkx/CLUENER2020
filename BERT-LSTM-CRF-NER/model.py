@@ -12,13 +12,13 @@ class BertNER(BertPreTrainedModel):
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.bilstm = nn.LSTM(
             input_size=config.lstm_embedding_size,  # 1024
-            hidden_size=config.hidden_size,  # 1024
+            hidden_size=config.hidden_size // 2,  # 1024
             batch_first=True,
             num_layers=2,
             dropout=config.lstm_dropout_prob,  # 0.5
             bidirectional=True
         )
-        self.classifier = nn.Linear(config.hidden_size * 2, config.num_labels)
+        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
         self.crf = CRF(config.num_labels, batch_first=True)
 
         self.init_weights()

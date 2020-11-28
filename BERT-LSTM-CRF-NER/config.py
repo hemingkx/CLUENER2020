@@ -5,12 +5,13 @@ data_dir = os.getcwd() + '/data/clue/'
 train_dir = data_dir + 'train.npz'
 test_dir = data_dir + 'test.npz'
 files = ['train', 'test']
-# bert_model = 'pretrained_bert_models/bert-base-chinese/'
-bert_model = 'pretrained_bert_models/chinese_roberta_wwm_large_ext/'
+bert_model = 'pretrained_bert_models/bert-base-chinese/'
+roberta_model = 'pretrained_bert_models/chinese_roberta_wwm_large_ext/'
 model_dir = os.getcwd() + '/experiments/clue/'
+log_dir = model_dir + 'train.log'
 
 # 训练集、验证集划分比例
-dev_split_size = 0.05
+dev_split_size = 0.1
 
 # 是否加载训练好的NER模型
 load_before = False
@@ -19,22 +20,25 @@ load_before = False
 full_fine_tuning = True
 
 # hyper-parameter
-learning_rate = 5e-5
+learning_rate = 3e-5
 weight_decay = 0.01
 clip_grad = 5
 
 batch_size = 32
-epoch_num = 50
-min_epoch_num = 5
+epoch_num = 3
+min_epoch_num = 1
 patience = 0.0002
-patience_num = 5
+patience_num = 10
 
-gpu = '3'
+gpu = '1'
 
 if gpu != '':
     device = torch.device(f"cuda:{gpu}")
 else:
     device = torch.device("cpu")
+
+labels = ['address', 'book', 'company', 'game', 'government',
+          'movie', 'name', 'organization', 'position', 'scene']
 
 label2id = {
     "O": 0,
