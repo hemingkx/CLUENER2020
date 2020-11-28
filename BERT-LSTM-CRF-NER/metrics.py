@@ -1,4 +1,6 @@
+import os
 import config
+import logging
 
 
 def get_entities(seq):
@@ -157,3 +159,25 @@ def f1_score(y_true, y_pred, mode='dev'):
             score_label = 2 * p_label * r_label / (p_label + r_label) if p_label + r_label > 0 else 0
             f_score[label] = score_label
         return f_score, score
+
+
+def bad_case(y_true, y_pred, data):
+    if not os.path.exists(config.case_dir):
+        os.system(r"touch {}".format(config.case_dir))  # 调用系统命令行来创建文件
+    output = open(config.case_dir, 'w')
+    for idx, (t, p) in enumerate(zip(y_true, y_pred)):
+        if t == p:
+            continue
+        else:
+            output.write("bad case " + str(idx) + ": \n")
+            output.write("sentence: " + str(data[idx]) + "\n")
+            output.write("golden label: " + str(t) + "\n")
+            output.write("model pred: " + str(p) + "\n")
+    logging.info("--------Bad Cases reserved !--------")
+
+
+if __name__ == "__main__":
+    y_t = [['O', 'O', 'O', 'B-address', 'I-address', 'I-address', 'O'], ['B-name', 'I-name', 'O']]
+    y_p = [['O', 'O', 'B-address', 'I-address', 'I-address', 'I-address', 'O'], ['B-name', 'I-name', 'O']]
+    sent = [['十', '一', '月', '中', '山', '路', '电'], ['周', '静', '说']]
+    bad_case(y_t, y_p, sent)

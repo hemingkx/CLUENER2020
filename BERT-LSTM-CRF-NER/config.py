@@ -9,6 +9,7 @@ bert_model = 'pretrained_bert_models/bert-base-chinese/'
 roberta_model = 'pretrained_bert_models/chinese_roberta_wwm_large_ext/'
 model_dir = os.getcwd() + '/experiments/clue/'
 log_dir = model_dir + 'train.log'
+case_dir = os.getcwd() + '/case/bad_case.txt'
 
 # 训练集、验证集划分比例
 dev_split_size = 0.1
@@ -25,8 +26,8 @@ weight_decay = 0.01
 clip_grad = 5
 
 batch_size = 32
-epoch_num = 50
-min_epoch_num = 5
+epoch_num = 3
+min_epoch_num = 1
 patience = 0.0002
 patience_num = 10
 
