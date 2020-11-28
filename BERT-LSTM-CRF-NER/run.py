@@ -11,6 +11,10 @@ from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader
 from transformers.optimization import get_cosine_schedule_with_warmup, AdamW
 
+import warnings
+
+warnings.filterwarnings('ignore')
+
 
 def dev_split(dataset_dir):
     """split dev set"""
@@ -29,7 +33,7 @@ def test():
     logging.info("--------Dataset Build!--------")
     # build data_loader
     test_loader = DataLoader(test_dataset, batch_size=config.batch_size,
-                             shuffle=True, collate_fn=test_dataset.collate_fn)
+                             shuffle=False, collate_fn=test_dataset.collate_fn)
     logging.info("--------Get Data-loader!--------")
     # Prepare model
     if config.model_dir is not None:
@@ -122,7 +126,7 @@ def run():
     optimizer = AdamW(optimizer_grouped_parameters, lr=config.learning_rate, correct_bias=False)
     train_steps_per_epoch = train_size // config.batch_size
     scheduler = get_cosine_schedule_with_warmup(optimizer,
-                                                num_warmup_steps=train_steps_per_epoch * (config.epoch_num // 10),
+                                                num_warmup_steps=train_steps_per_epoch,
                                                 num_training_steps=config.epoch_num * train_steps_per_epoch)
 
     # Train the model

@@ -5,7 +5,8 @@ from tqdm import tqdm
 
 import config
 from model import BertNER
-from metrics import f1_score
+from metrics import f1_score, bad_case
+from transformers import BertTokenizer
 
 
 def train_epoch(train_loader, model, optimizer, scheduler, epoch):
@@ -69,14 +70,18 @@ def evaluate(dev_loader, model, mode='dev'):
     # set model to evaluation mode
     model.eval()
 
+    tokenizer = BertTokenizer.from_pretrained(config.bert_model, do_lower_case=True, skip_special_tokens=True)
     id2label = config.id2label
     true_tags = []
     pred_tags = []
+    sent_data = []
     dev_losses = 0
 
     with torch.no_grad():
         for idx, batch_samples in enumerate(dev_loader):
             batch_data, batch_token_starts, batch_tags = batch_samples
+            sent_data.extend([[tokenizer.convert_ids_to_tokens(idx.item()) for idx in indices
+                               if (idx.item() > 0 and idx.item() != 101)] for indices in batch_data])
             batch_masks = batch_data.gt(0)  # get padding mask, gt(x): get index greater than x
             label_masks = batch_tags.gt(-1)  # get padding mask, gt(x): get index greater than x
             # compute model output and loss
@@ -95,6 +100,7 @@ def evaluate(dev_loader, model, mode='dev'):
             true_tags.extend([[id2label.get(idx) for idx in indices if idx > -1] for indices in batch_tags])
 
     assert len(pred_tags) == len(true_tags)
+    assert len(sent_data) == len(true_tags)
 
     # logging loss, f1 and report
     metrics = {}
@@ -102,8 +108,23 @@ def evaluate(dev_loader, model, mode='dev'):
         f1 = f1_score(true_tags, pred_tags, mode)
         metrics['f1'] = f1
     else:
+        bad_case(true_tags, pred_tags, sent_data)
         f1_labels, f1 = f1_score(true_tags, pred_tags, mode)
         metrics['f1_labels'] = f1_labels
         metrics['f1'] = f1
     metrics['loss'] = float(dev_losses) / len(dev_loader)
     return metrics
+
+
+if __name__ == "__main__":
+    a = [101, 679, 6814, 8024, 517, 2208, 3360, 2208, 1957, 518, 7027, 4638,
+                             1957, 4028, 1447, 3683, 6772, 4023, 778, 8024, 6844, 1394, 3173, 4495,
+                             807, 4638, 6225, 830, 5408, 8024, 5445, 3300, 1126, 1767, 3289, 3471,
+                             4413, 4638, 2767, 738, 976, 4638, 3683, 6772, 1962, 511, 0, 0,
+                             0, 0, 0]
+    t = torch.tensor(a, dtype=torch.long)
+    tokenizer = BertTokenizer.from_pretrained(config.bert_model, do_lower_case=True, skip_special_tokens=True)
+    word = tokenizer.convert_ids_to_tokens(t[1].item())
+    sent = tokenizer.decode(t.tolist())
+    print(word)
+    print(sent)
