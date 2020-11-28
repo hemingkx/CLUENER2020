@@ -25,8 +25,8 @@ weight_decay = 0.01
 clip_grad = 5
 
 batch_size = 32
-epoch_num = 3
-min_epoch_num = 1
+epoch_num = 50
+min_epoch_num = 5
 patience = 0.0002
 patience_num = 10
 
