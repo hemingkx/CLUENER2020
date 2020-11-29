@@ -8,7 +8,7 @@
 
 CLUENER2020共有10个不同的类别，包括：组织(organization)、人名(name)、地址(address)、公司(company)、政府(government)、书籍(book)、游戏(game)、电影(movie)、职位(position)和景点(scene)。
 
-原始数据分别位于train.json和test.json文件中，文件中的每一行是一条单独的数据，一条数据包括一个原始句子以及其上的标签，具体形式如下：
+原始数据分别位于./data/clue/路径下的train.json和test.json文件中，文件中的每一行是一条单独的数据，一条数据包括一个原始句子以及其上的标签，具体形式如下：
 
 ```
 {
@@ -45,6 +45,24 @@ To get the environment settled, run:
 pip install -r requirements.txt
 ```
 
+## Results
+
+各个模型在数据集上的结果（f1 score）如下表所示：（Roberta均指RoBERTa-wwm-ext-large模型）
+
+| 模型         | BiLSTM+CRF | Roberta+Softmax | Roberta+CRF | Roberta+BiLSTM+CRF |
+| ------------ | ---------- | --------------- | ----------- | ------------------ |
+| address      | 45.87      | 57.49           | 62.35       | **63.15**          |
+| book         | 68.57      | 75.31           | 80.27       | **81.45**          |
+| company      | 68.65      | 76.71           | 78.75       | **80.62**          |
+| game         | 80.00      | 82.9            | 82.39       | **85.57**          |
+| government   | 70.52      | 79.01           | 80.00       | 81.31              |
+| movie        | 74.40      | 83.22           | 84.84       | **85.61**          |
+| name         | 70.00      | 88.11           | 87.58       | **88.22**          |
+| organization | 71.98      | 74.3            | 79.14       | **80.53**          |
+| position     | 72.51      | 77.39           | **79.86**   | 78.82              |
+| scene        | 52.20      | 62.55           | 66.00       | **72.86**          |
+| **overall**  | 67.31      | 75.89           | 78.21       | **79.64**          |
+
 ## Pretrained Model Required
 
 需要提前下载BERT的预训练模型，包括
@@ -56,7 +74,7 @@ pip install -r requirements.txt
 
 **bert-base-chinese模型：**[下载地址](https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip) 。
 
-注意，以上下载地址仅提供tensorflow版本，需要[huggingface suggest](https://huggingface.co/transformers/converting_tensorflow_models.html)将其转换为pytorch版本。
+注意，以上下载地址仅提供tensorflow版本，需要根据[huggingface suggest](https://huggingface.co/transformers/converting_tensorflow_models.html)将其转换为pytorch版本。
 
 **chinese_roberta_wwm_large模型：**[下载地址](https://github.com/ymcui/Chinese-BERT-wwm#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE) 。
 
