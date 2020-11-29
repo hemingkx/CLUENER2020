@@ -1,0 +1,247 @@
+2020-11-28 19:00:30,098:INFO: device: cuda:2
+2020-11-28 19:00:30,098:INFO: --------Process Done!--------
+2020-11-28 19:00:30,254:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-11-28 19:00:30,254:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-11-28 19:00:30,254:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-11-28 19:00:30,254:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-11-28 19:00:30,254:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-11-28 19:00:30,254:INFO: loading file None
+2020-11-28 19:00:30,254:INFO: loading file None
+2020-11-28 19:00:30,254:INFO: loading file None
+2020-11-28 19:00:43,258:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-11-28 19:00:43,258:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-11-28 19:00:43,258:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-11-28 19:00:43,258:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-11-28 19:00:43,258:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-11-28 19:00:43,258:INFO: loading file None
+2020-11-28 19:00:43,259:INFO: loading file None
+2020-11-28 19:00:43,259:INFO: loading file None
+2020-11-28 19:00:44,722:INFO: --------Dataset Build!--------
+2020-11-28 19:00:44,723:INFO: --------Get Dataloader!--------
+2020-11-28 19:00:44,723:INFO: loading configuration file pretrained_bert_models/chinese_roberta_wwm_large_ext/config.json
+2020-11-28 19:00:44,723:INFO: Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "directionality": "bidi",
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "is_decoder": false,
+  "layer_norm_eps": 1e-12,
+  "lstm_dropout_prob": 0.5,
+  "lstm_embedding_size": 1024,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_labels": 31,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pooler_fc_size": 768,
+  "pooler_num_attention_heads": 12,
+  "pooler_num_fc_layers": 3,
+  "pooler_size_per_head": 128,
+  "pooler_type": "first_token_transform",
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 21128
+}
+
+2020-11-28 19:00:44,723:INFO: loading weights file pretrained_bert_models/chinese_roberta_wwm_large_ext/pytorch_model.bin
+2020-11-28 19:00:51,887:INFO: Weights of BertNER not initialized from pretrained model: ['classifier.weight', 'classifier.bias']
+2020-11-28 19:00:51,887:INFO: Weights from pretrained model not used in BertNER: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias']
+2020-11-28 19:00:53,703:INFO: --------Start Training!--------
+2020-11-28 19:03:38,927:INFO: Epoch: 1, train loss: 0.5043443665891985
+2020-11-28 19:03:49,228:INFO: Epoch: 1, dev loss: 0.22352534006623662, f1 score: 0.5851912123677787
+2020-11-28 19:03:49,228:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:03:51,906:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:03:51,906:INFO: --------Save best model!--------
+2020-11-28 19:06:38,466:INFO: Epoch: 2, train loss: 0.16527614906036814
+2020-11-28 19:06:48,756:INFO: Epoch: 2, dev loss: 0.21009205851484747, f1 score: 0.7354938870560838
+2020-11-28 19:06:48,757:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:06:50,652:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:06:50,652:INFO: --------Save best model!--------
+2020-11-28 19:09:37,066:INFO: Epoch: 3, train loss: 0.09920016036863767
+2020-11-28 19:09:47,442:INFO: Epoch: 3, dev loss: 0.23255427094066844, f1 score: 0.7297349584058813
+2020-11-28 19:12:33,922:INFO: Epoch: 4, train loss: 0.05752252358881751
+2020-11-28 19:12:44,182:INFO: Epoch: 4, dev loss: 0.24681578094468398, f1 score: 0.7568743818001978
+2020-11-28 19:12:44,183:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:12:46,830:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:12:46,830:INFO: --------Save best model!--------
+2020-11-28 19:15:33,403:INFO: Epoch: 5, train loss: 0.0370186893838049
+2020-11-28 19:15:43,692:INFO: Epoch: 5, dev loss: 0.2784353253595969, f1 score: 0.7486252945797329
+2020-11-28 19:18:30,402:INFO: Epoch: 6, train loss: 0.027316619701631267
+2020-11-28 19:18:40,709:INFO: Epoch: 6, dev loss: 0.2983442623825634, f1 score: 0.7447388932190179
+2020-11-28 19:21:27,430:INFO: Epoch: 7, train loss: 0.01861619252078358
+2020-11-28 19:21:37,696:INFO: Epoch: 7, dev loss: 0.2994675404008697, f1 score: 0.7647409172126266
+2020-11-28 19:21:37,697:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:21:40,290:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:21:40,290:INFO: --------Save best model!--------
+2020-11-28 19:24:26,988:INFO: Epoch: 8, train loss: 0.01310288576157948
+2020-11-28 19:24:37,291:INFO: Epoch: 8, dev loss: 0.33211247798274546, f1 score: 0.755758538522637
+2020-11-28 19:27:24,266:INFO: Epoch: 9, train loss: 0.011401587055047832
+2020-11-28 19:27:34,575:INFO: Epoch: 9, dev loss: 0.3613700849168441, f1 score: 0.7557494052339414
+2020-11-28 19:30:21,857:INFO: Epoch: 10, train loss: 0.012287752020092859
+2020-11-28 19:30:32,200:INFO: Epoch: 10, dev loss: 0.3849375874680631, f1 score: 0.759992046132432
+2020-11-28 19:33:20,524:INFO: Epoch: 11, train loss: 0.010360297138561424
+2020-11-28 19:33:31,172:INFO: Epoch: 11, dev loss: 0.38942523585522876, f1 score: 0.7661691542288558
+2020-11-28 19:33:31,173:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:33:34,071:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:33:34,071:INFO: --------Save best model!--------
+2020-11-28 19:36:22,517:INFO: Epoch: 12, train loss: 0.011547040959137028
+2020-11-28 19:36:32,923:INFO: Epoch: 12, dev loss: 0.4310547363232164, f1 score: 0.7457098283931357
+2020-11-28 19:39:21,278:INFO: Epoch: 13, train loss: 0.0118607964395298
+2020-11-28 19:39:32,036:INFO: Epoch: 13, dev loss: 0.38212134557611804, f1 score: 0.7618858954041204
+2020-11-28 19:42:19,950:INFO: Epoch: 14, train loss: 0.008437436569071753
+2020-11-28 19:42:30,335:INFO: Epoch: 14, dev loss: 0.3954417050323066, f1 score: 0.7673404676971859
+2020-11-28 19:42:30,335:INFO: Configuration saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 19:42:32,277:INFO: Model weights saved in /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 19:42:32,277:INFO: --------Save best model!--------
+2020-11-28 19:45:19,266:INFO: Epoch: 15, train loss: 0.006067715013144606
+2020-11-28 19:45:29,638:INFO: Epoch: 15, dev loss: 0.4165840297937393, f1 score: 0.755688622754491
+2020-11-28 19:48:16,573:INFO: Epoch: 16, train loss: 0.005727503311177931
+2020-11-28 19:48:26,902:INFO: Epoch: 16, dev loss: 0.43323937934987683, f1 score: 0.7578947368421053
+2020-11-28 19:51:13,764:INFO: Epoch: 17, train loss: 0.0069242533839137905
+2020-11-28 19:51:24,120:INFO: Epoch: 17, dev loss: 0.40549618005752563, f1 score: 0.7545219638242894
+2020-11-28 19:54:10,956:INFO: Epoch: 18, train loss: 0.00564936191041834
+2020-11-28 19:54:21,266:INFO: Epoch: 18, dev loss: 0.4045005672994782, f1 score: 0.7547395729395331
+2020-11-28 19:57:08,369:INFO: Epoch: 19, train loss: 0.004272768120145965
+2020-11-28 19:57:18,698:INFO: Epoch: 19, dev loss: 0.4023122945252587, f1 score: 0.750930825004899
+2020-11-28 20:00:05,647:INFO: Epoch: 20, train loss: 0.0036706398460701287
+2020-11-28 20:00:15,985:INFO: Epoch: 20, dev loss: 0.4047628978596014, f1 score: 0.7588129854610637
+2020-11-28 20:03:02,918:INFO: Epoch: 21, train loss: 0.00366597068925402
+2020-11-28 20:03:13,245:INFO: Epoch: 21, dev loss: 0.42259956501862583, f1 score: 0.7567350221149981
+2020-11-28 20:06:00,214:INFO: Epoch: 22, train loss: 0.0032789537307517003
+2020-11-28 20:06:10,555:INFO: Epoch: 22, dev loss: 0.40963758659713406, f1 score: 0.7573238321456848
+2020-11-28 20:08:57,594:INFO: Epoch: 23, train loss: 0.004211075298779947
+2020-11-28 20:09:07,913:INFO: Epoch: 23, dev loss: 0.44248879174975786, f1 score: 0.7523622047244093
+2020-11-28 20:11:55,081:INFO: Epoch: 24, train loss: 0.004225138355119127
+2020-11-28 20:12:05,422:INFO: Epoch: 24, dev loss: 0.42446471005678177, f1 score: 0.7534736006351725
+2020-11-28 20:12:05,422:INFO: Best val f1: 0.7673404676971859
+2020-11-28 20:12:05,422:INFO: Training Finished!
+2020-11-28 20:12:05,457:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-11-28 20:12:05,458:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-11-28 20:12:05,458:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-11-28 20:12:05,458:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-11-28 20:12:05,458:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-11-28 20:12:05,458:INFO: loading file None
+2020-11-28 20:12:05,458:INFO: loading file None
+2020-11-28 20:12:05,458:INFO: loading file None
+2020-11-28 20:12:07,243:INFO: --------Dataset Build!--------
+2020-11-28 20:12:07,243:INFO: --------Get Data-loader!--------
+2020-11-28 20:12:07,243:INFO: loading configuration file /home/xiaheming/workspace/BERT-Linear/experiments/clue/config.json
+2020-11-28 20:12:07,244:INFO: Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "directionality": "bidi",
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "is_decoder": false,
+  "layer_norm_eps": 1e-12,
+  "lstm_dropout_prob": 0.5,
+  "lstm_embedding_size": 1024,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_labels": 31,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pooler_fc_size": 768,
+  "pooler_num_attention_heads": 12,
+  "pooler_num_fc_layers": 3,
+  "pooler_size_per_head": 128,
+  "pooler_type": "first_token_transform",
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 21128
+}
+
+2020-11-28 20:12:07,244:INFO: loading weights file /home/xiaheming/workspace/BERT-Linear/experiments/clue/pytorch_model.bin
+2020-11-28 20:12:14,122:INFO: --------Load model from /home/xiaheming/workspace/BERT-Linear/experiments/clue/--------
+2020-11-28 20:12:27,008:INFO: test loss: 0.4053046616415183, f1 score: 0.7589871834948422
+2020-11-28 20:12:27,008:INFO: f1 score of address: 0.5749690210656754
+2020-11-28 20:12:27,008:INFO: f1 score of book: 0.7531645569620253
+2020-11-28 20:12:27,008:INFO: f1 score of company: 0.767123287671233
+2020-11-28 20:12:27,008:INFO: f1 score of game: 0.8290322580645162
+2020-11-28 20:12:27,008:INFO: f1 score of government: 0.7901701323251419
+2020-11-28 20:12:27,008:INFO: f1 score of movie: 0.832258064516129
+2020-11-28 20:12:27,008:INFO: f1 score of name: 0.8811777076761306
+2020-11-28 20:12:27,008:INFO: f1 score of organization: 0.7430093209054593
+2020-11-28 20:12:27,008:INFO: f1 score of position: 0.7739032620922386
+2020-11-28 20:12:27,008:INFO: f1 score of scene: 0.6255924170616114
+2020-11-28 21:33:54,824:INFO: device: cuda:2
+2020-11-28 21:33:54,844:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-11-28 21:33:54,844:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-11-28 21:33:54,844:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-11-28 21:33:54,844:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-11-28 21:33:54,844:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-11-28 21:33:54,844:INFO: loading file None
+2020-11-28 21:33:54,844:INFO: loading file None
+2020-11-28 21:33:54,844:INFO: loading file None
+2020-11-28 21:33:56,647:INFO: --------Dataset Build!--------
+2020-11-28 21:33:56,647:INFO: --------Get Data-loader!--------
+2020-11-28 21:33:56,648:INFO: loading configuration file /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-11-28 21:33:56,648:INFO: Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "directionality": "bidi",
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "is_decoder": false,
+  "layer_norm_eps": 1e-12,
+  "lstm_dropout_prob": 0.5,
+  "lstm_embedding_size": 1024,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_labels": 31,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pooler_fc_size": 768,
+  "pooler_num_attention_heads": 12,
+  "pooler_num_fc_layers": 3,
+  "pooler_size_per_head": 128,
+  "pooler_type": "first_token_transform",
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 21128
+}
+
+2020-11-28 21:33:56,648:INFO: loading weights file /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-11-28 21:34:05,298:INFO: --------Load model from /home/xiaheming/workspace/BERT-NER/experiments/clue/--------
+2020-11-28 21:34:05,299:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-11-28 21:34:05,299:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-11-28 21:34:05,299:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-11-28 21:34:05,299:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-11-28 21:34:05,299:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-11-28 21:34:05,299:INFO: loading file None
+2020-11-28 21:34:05,299:INFO: loading file None
+2020-11-28 21:34:05,299:INFO: loading file None
+2020-11-28 21:34:19,697:INFO: --------Bad Cases reserved !--------
+2020-11-28 21:34:19,790:INFO: test loss: 0.4051155799201557, f1 score: 0.7589871834948422
+2020-11-28 21:34:19,790:INFO: f1 score of address: 0.5749690210656754
+2020-11-28 21:34:19,790:INFO: f1 score of book: 0.7531645569620253
+2020-11-28 21:34:19,790:INFO: f1 score of company: 0.767123287671233
+2020-11-28 21:34:19,790:INFO: f1 score of game: 0.8290322580645162
+2020-11-28 21:34:19,790:INFO: f1 score of government: 0.7901701323251419
+2020-11-28 21:34:19,790:INFO: f1 score of movie: 0.832258064516129
+2020-11-28 21:34:19,790:INFO: f1 score of name: 0.8811777076761306
+2020-11-28 21:34:19,790:INFO: f1 score of organization: 0.7430093209054593
+2020-11-28 21:34:19,790:INFO: f1 score of position: 0.7739032620922386
+2020-11-28 21:34:19,790:INFO: f1 score of scene: 0.6255924170616114

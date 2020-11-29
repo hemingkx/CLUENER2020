@@ -1,0 +1,50 @@
+absl-py==0.11.0
+astor==0.8.1
+boto3==1.16.21
+botocore==1.19.21
+cached-property==1.5.2
+certifi==2020.11.8
+chardet==3.0.4
+click==7.1.2
+gast==0.2.2
+google-pasta==0.2.0
+grpcio==1.33.2
+h5py==3.1.0
+idna==2.10
+importlib-metadata==2.0.0
+jmespath==0.10.0
+joblib @ file:///tmp/build/80754af9/joblib_1601912903842/work
+Keras-Applications==1.0.8
+Keras-Preprocessing==1.1.2
+Markdown==3.3.3
+mkl-fft==1.2.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+numpy==1.19.4
+olefile==0.46
+opt-einsum==3.3.0
+Pillow @ file:///tmp/build/80754af9/pillow_1603822238230/work
+protobuf==3.14.0
+python-dateutil==2.8.1
+pytorch-crf==0.7.2
+regex==2020.11.13
+requests==2.25.0
+s3transfer==0.3.3
+sacremoses==0.0.43
+scikit-learn @ file:///tmp/build/80754af9/scikit-learn_1598379690588/work
+scipy @ file:///tmp/build/80754af9/scipy_1597686625380/work
+sentencepiece==0.1.94
+six @ file:///tmp/build/80754af9/six_1605205335545/work
+tensorboard==1.15.0
+tensorflow==1.15.0
+tensorflow-estimator==1.15.1
+termcolor==1.1.0
+threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
+torch==1.5.1
+torchvision==0.6.0a0+35d732a
+tqdm==4.52.0
+transformers==2.2.2
+urllib3==1.26.2
+Werkzeug==1.0.1
+wrapt==1.12.1
+zipp==3.4.0
