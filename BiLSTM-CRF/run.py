@@ -1,18 +1,19 @@
 import torch
-import torch.nn as nn
 from torch import optim
+from torch.optim.lr_scheduler import StepLR
 
+import utils
 import config
+import logging
 import numpy as np
 from model import BiLSTM_CRF
-from crf import BiLSTM_CRF_MODIFY_PARALLEL
-from dev_split import dev_split
 from data_process import Processor
 from Vocabulary import Vocabulary
 from data_loader import NERDataset
 from torch.utils.data import DataLoader
 from sklearn.model_selection import KFold
-from train import train, test, sample_test, crf_train, crf_test
+from train import train, test, sample_test
+from sklearn.model_selection import train_test_split
 
 input_array = [[1642, 1291, 40, 2255, 970, 46, 124, 1604, 1915, 547, 0, 173,
                 303, 124, 1029, 52, 20, 2839, 2, 2255, 2078, 1553, 225, 540,
@@ -52,13 +53,25 @@ test_input = torch.tensor(input_array, dtype=torch.long)
 test_label = torch.tensor(label_array, dtype=torch.long)
 
 
+def dev_split(dataset_dir):
+    """split one dev set without k-fold"""
+    data = np.load(dataset_dir, allow_pickle=True)
+    words = data["words"]
+    labels = data["labels"]
+    x_train, x_dev, y_train, y_dev = train_test_split(words, labels, test_size=config.dev_split_size, random_state=0)
+    return x_train, x_dev, y_train, y_dev
+
+
 def k_fold_run():
     """train with k-fold"""
+    # set the logger
+    utils.set_logger(config.log_dir)
     # 设置gpu为命令行参数指定的id
     if config.gpu != '':
         device = torch.device(f"cuda:{config.gpu}")
     else:
         device = torch.device("cpu")
+    logging.info("device: {}".format(device))
     # 处理数据，分离文本和标签
     processor = Processor(config)
     processor.data_process()
@@ -83,18 +96,21 @@ def k_fold_run():
         test_loss, f1 = run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index)
         total_test_loss += test_loss
         total_f1 += f1
-    average_test_loss = float(total_test_loss)/config.n_split
-    average_f1 = float(total_f1)/config.n_split
-    print("Average test loss: ", average_test_loss, ", average f1 score: ", average_f1)
+    average_test_loss = float(total_test_loss) / config.n_split
+    average_f1 = float(total_f1) / config.n_split
+    logging.info("Average test loss: {} , average f1 score: {}".format(average_test_loss, average_f1))
 
 
 def simple_run():
     """train without k-fold"""
+    # set the logger
+    utils.set_logger(config.log_dir)
     # 设置gpu为命令行参数指定的id
     if config.gpu != '':
         device = torch.device(f"cuda:{config.gpu}")
     else:
         device = torch.device("cpu")
+    logging.info("device: {}".format(device))
     # 处理数据，分离文本和标签
     processor = Processor(config)
     processor.data_process()
@@ -104,50 +120,10 @@ def simple_run():
     # 分离出验证集
     word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
     # simple run without k-fold
-    kf_index = 1
-    run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index)
+    run(word_train, label_train, word_dev, label_dev, vocab, device)
 
 
-def crf_simple_run():
-    """train with crf"""
-    # 设置gpu为命令行参数指定的id
-    if config.gpu != '':
-        device = torch.device(f"cuda:{config.gpu}")
-    else:
-        device = torch.device("cpu")
-    # 处理数据，分离文本和标签
-    processor = Processor(config)
-    processor.data_process()
-    # 建立词表
-    vocab = Vocabulary(config)
-    vocab.get_vocab()
-    # 分离出验证集
-    word_train, word_dev, label_train, label_dev = dev_split(config.train_dir)
-    # simple run without k-fold
-    crf_run(word_train, label_train, word_dev, label_dev, vocab, device)
-
-
-def crf_run(word_train, label_train, word_dev, label_dev, vocab, device):
-    # build dataset
-    train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
-    dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
-    # build data_loader
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size,
-                              shuffle=True, collate_fn=train_dataset.collate_fn)
-    dev_loader = DataLoader(dev_dataset, batch_size=config.batch_size,
-                            shuffle=True, collate_fn=dev_dataset.collate_fn)
-    # model
-    model = BiLSTM_CRF_MODIFY_PARALLEL(vocab.vocab_size(), vocab.label2id,
-                                       config.embedding_size, config.hidden_size, device)
-    model.to(device)
-    # loss and optimizer
-    optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
-    # train and test
-    crf_train(train_loader, dev_loader, vocab, model, optimizer, device)
-    crf_test(config.test_dir, vocab, model, device)
-
-
-def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
+def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index=0):
     # build dataset
     train_dataset = NERDataset(word_train, label_train, vocab, config.label2id)
     dev_dataset = NERDataset(word_dev, label_dev, vocab, config.label2id)
@@ -163,17 +139,20 @@ def run(word_train, label_train, word_dev, label_dev, vocab, device, kf_index):
                        vocab_size=vocab.vocab_size(),
                        target_size=vocab.label_size())
     model.to(device)
-    # loss and optimizer
-    loss_function = nn.CrossEntropyLoss()
+    # optimizer
     optimizer = optim.Adam(model.parameters(), lr=config.lr, betas=config.betas)
+    scheduler = StepLR(optimizer, step_size=config.lr_step, gamma=config.lr_gamma)
+    # how to initialize these parameters elegantly
+    for p in model.crf.parameters():
+        _ = torch.nn.init.uniform_(p, -1, 1)
     # train and test
-    train(train_loader, dev_loader, vocab, model, loss_function, optimizer, device, kf_index)
+    train(train_loader, dev_loader, vocab, model, optimizer, scheduler, device, kf_index)
     with torch.no_grad():
         # test on the final test set
-        test_loss, f1 = test(config.test_dir, vocab, model, loss_function, device, kf_index)
-        sample_test(test_input, test_label, model, device)
+        test_loss, f1 = test(config.test_dir, vocab, device, kf_index)
+        # sample_test(test_input, test_label, model, device)
     return test_loss, f1
 
 
 if __name__ == '__main__':
-    crf_simple_run()
+    simple_run()

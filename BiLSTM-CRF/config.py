@@ -1,12 +1,16 @@
 import os
 
-data_dir = os.getcwd() + '/NER/dataset/cluener/'
+data_dir = os.getcwd() + '/data/clue/'
 train_dir = data_dir + 'train.npz'
 test_dir = data_dir + 'test.npz'
 files = ['train', 'test']
 vocab_path = data_dir + 'vocab.npz'
+exp_dir = os.getcwd() + '/experiments/clue/'
+model_dir = exp_dir + 'model.pth'
+log_dir = exp_dir + 'train.log'
+case_dir = os.getcwd() + '/case/bad_case.txt'
 
-max_vocab_size = 50000000000
+max_vocab_size = 1000000
 
 n_split = 5
 dev_split_size = 0.1
@@ -16,8 +20,18 @@ hidden_size = 384
 drop_out = 0.5
 lr = 0.001
 betas = (0.9, 0.999)
-epochs = 10
-gpu = '3'
+lr_step = 5
+lr_gamma = 0.8
+
+epoch_num = 30
+min_epoch_num = 5
+patience = 0.0002
+patience_num = 5
+
+gpu = '1'
+
+labels = ['address', 'book', 'company', 'game', 'government',
+          'movie', 'name', 'organization', 'position', 'scene']
 
 label2id = {
     "O": 0,
@@ -51,11 +65,6 @@ label2id = {
     'S-organization': 28,
     'S-position': 29,
     'S-scene': 30,
-    "<START>": 31,
-    "<STOP>": 32
 }
 
 id2label = {_id: _label for _label, _id in list(label2id.items())}
-
-if __name__ == '__main__':
-    print(data_dir)

@@ -1,4 +1,5 @@
 import os
+import logging
 import numpy as np
 
 
@@ -54,7 +55,7 @@ class Vocabulary:
             # '[()]'将array转化为字典
             self.word2id = data["word2id"][()]
             self.id2word = data["id2word"][()]
-            print("--------", "Vocabulary Loaded!", "--------")
+            logging.info("-------- Vocabulary Loaded! --------")
             return
         # 如果没有处理好的二进制文件，就处理原始的npz文件
         word_freq = {}
@@ -80,5 +81,5 @@ class Vocabulary:
         self.id2word = {_idx: _word for _word, _idx in list(self.word2id.items())}
         # 保存为二进制文件
         np.savez_compressed(self.vocab_path, word2id=self.word2id, id2word=self.id2word)
-        print("--------", "Vocabulary Build!", "--------")
+        logging.info("-------- Vocabulary Build! --------")
 

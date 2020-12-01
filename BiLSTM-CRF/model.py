@@ -1,4 +1,5 @@
 import torch.nn as nn
+from torchcrf import CRF
 
 
 class BiLSTM_CRF(nn.Module):
@@ -20,10 +21,16 @@ class BiLSTM_CRF(nn.Module):
             bidirectional=True
         )
         self.classifier = nn.Linear(hidden_size * 2, target_size)
+        # https://pytorch-crf.readthedocs.io/en/stable/_modules/torchcrf.html
+        self.crf = CRF(target_size, batch_first=True)
 
     def forward(self, inputs_ids):
         embeddings = self.embedding(inputs_ids)
         sequence_output, _ = self.bilstm(embeddings)
-        features = self.classifier(sequence_output)
-        tag_scores = features
+        tag_scores = self.classifier(sequence_output)
         return tag_scores
+
+    def forward_with_crf(self, input_ids, input_mask, input_tags):
+        tag_scores = self.forward(input_ids)
+        loss = self.crf(tag_scores, input_tags, input_mask) * (-1)
+        return tag_scores, loss
