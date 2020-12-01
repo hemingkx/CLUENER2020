@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 import numpy as np
 
 
@@ -56,4 +57,4 @@ class Processor:
                 label_list.append(labels)
                 # 保存成二进制文件
             np.savez_compressed(output_dir, words=word_list, labels=label_list)
-            print("--------", mode, "data process DONE!--------")
+            logging.info("--------{} data process DONE!--------".format(mode))

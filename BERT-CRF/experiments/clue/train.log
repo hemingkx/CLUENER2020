@@ -1,0 +1,256 @@
+2020-12-01 13:33:03,261:INFO: device: cuda:1
+2020-12-01 13:33:03,261:INFO: --------Process Done!--------
+2020-12-01 13:33:03,424:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-12-01 13:33:03,424:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-12-01 13:33:03,424:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-12-01 13:33:03,424:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-12-01 13:33:03,424:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-12-01 13:33:03,424:INFO: loading file None
+2020-12-01 13:33:03,424:INFO: loading file None
+2020-12-01 13:33:03,424:INFO: loading file None
+2020-12-01 13:33:16,782:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-12-01 13:33:16,782:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-12-01 13:33:16,782:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-12-01 13:33:16,782:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-12-01 13:33:16,782:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-12-01 13:33:16,782:INFO: loading file None
+2020-12-01 13:33:16,782:INFO: loading file None
+2020-12-01 13:33:16,782:INFO: loading file None
+2020-12-01 13:33:18,266:INFO: --------Dataset Build!--------
+2020-12-01 13:33:18,266:INFO: --------Get Dataloader!--------
+2020-12-01 13:33:18,266:INFO: loading configuration file pretrained_bert_models/chinese_roberta_wwm_large_ext/config.json
+2020-12-01 13:33:18,266:INFO: Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "directionality": "bidi",
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "is_decoder": false,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_labels": 31,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pooler_fc_size": 768,
+  "pooler_num_attention_heads": 12,
+  "pooler_num_fc_layers": 3,
+  "pooler_size_per_head": 128,
+  "pooler_type": "first_token_transform",
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 21128
+}
+
+2020-12-01 13:33:18,267:INFO: loading weights file pretrained_bert_models/chinese_roberta_wwm_large_ext/pytorch_model.bin
+2020-12-01 13:33:25,525:INFO: Weights of BertNER not initialized from pretrained model: ['classifier.weight', 'classifier.bias', 'crf.start_transitions', 'crf.end_transitions', 'crf.transitions']
+2020-12-01 13:33:25,525:INFO: Weights from pretrained model not used in BertNER: ['cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.decoder.weight', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias']
+2020-12-01 13:33:27,356:INFO: --------Start Training!--------
+2020-12-01 13:36:31,717:INFO: Epoch: 1, train loss: 951.2736621642664
+2020-12-01 13:36:43,331:INFO: Epoch: 1, dev loss: 279.6296974630917, f1 score: 0.6818967172201958
+2020-12-01 13:36:43,331:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 13:36:46,321:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 13:36:46,321:INFO: --------Save best model!--------
+2020-12-01 13:39:52,203:INFO: Epoch: 2, train loss: 228.03223801918156
+2020-12-01 13:40:03,820:INFO: Epoch: 2, dev loss: 239.37650680541992, f1 score: 0.7294252434599962
+2020-12-01 13:40:03,820:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 13:40:06,631:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 13:40:06,631:INFO: --------Save best model!--------
+2020-12-01 13:43:12,478:INFO: Epoch: 3, train loss: 164.66184861589187
+2020-12-01 13:43:24,193:INFO: Epoch: 3, dev loss: 252.63656257180605, f1 score: 0.7525464349910125
+2020-12-01 13:43:24,193:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 13:43:27,205:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 13:43:27,205:INFO: --------Save best model!--------
+2020-12-01 13:46:32,996:INFO: Epoch: 4, train loss: 118.39172640255968
+2020-12-01 13:46:44,658:INFO: Epoch: 4, dev loss: 258.1762426039752, f1 score: 0.7524907208439148
+2020-12-01 13:49:50,431:INFO: Epoch: 5, train loss: 84.13382827960226
+2020-12-01 13:50:02,088:INFO: Epoch: 5, dev loss: 306.5032804152545, f1 score: 0.7637028014616322
+2020-12-01 13:50:02,089:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 13:50:04,913:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 13:50:04,914:INFO: --------Save best model!--------
+2020-12-01 13:53:10,746:INFO: Epoch: 6, train loss: 65.19358886743929
+2020-12-01 13:53:22,423:INFO: Epoch: 6, dev loss: 310.6508869844324, f1 score: 0.7609046849757672
+2020-12-01 13:56:28,171:INFO: Epoch: 7, train loss: 48.097676809078
+2020-12-01 13:56:39,836:INFO: Epoch: 7, dev loss: 340.42704413918887, f1 score: 0.7683224755700325
+2020-12-01 13:56:39,836:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 13:56:42,496:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 13:56:42,496:INFO: --------Save best model!--------
+2020-12-01 13:59:48,276:INFO: Epoch: 8, train loss: 37.92243501770221
+2020-12-01 13:59:59,979:INFO: Epoch: 8, dev loss: 362.5531355913948, f1 score: 0.7734422880490295
+2020-12-01 13:59:59,980:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:00:01,947:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:00:01,948:INFO: --------Save best model!--------
+2020-12-01 14:03:07,768:INFO: Epoch: 9, train loss: 26.867554522977017
+2020-12-01 14:03:19,527:INFO: Epoch: 9, dev loss: 392.8717862297507, f1 score: 0.7718800648298217
+2020-12-01 14:06:25,378:INFO: Epoch: 10, train loss: 25.02924417426484
+2020-12-01 14:06:37,072:INFO: Epoch: 10, dev loss: 412.19294963163486, f1 score: 0.7778003659280341
+2020-12-01 14:06:37,072:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:06:39,189:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:06:39,190:INFO: --------Save best model!--------
+2020-12-01 14:09:45,079:INFO: Epoch: 11, train loss: 19.092204090785664
+2020-12-01 14:09:56,757:INFO: Epoch: 11, dev loss: 440.2259871538948, f1 score: 0.7807637906647807
+2020-12-01 14:09:56,757:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:09:59,281:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:09:59,281:INFO: --------Save best model!--------
+2020-12-01 14:13:05,177:INFO: Epoch: 12, train loss: 17.603890900564664
+2020-12-01 14:13:16,966:INFO: Epoch: 12, dev loss: 467.6682227639591, f1 score: 0.7699856879983643
+2020-12-01 14:16:22,809:INFO: Epoch: 13, train loss: 14.455676377803185
+2020-12-01 14:16:34,576:INFO: Epoch: 13, dev loss: 481.09236593807447, f1 score: 0.7745549109821964
+2020-12-01 14:19:40,449:INFO: Epoch: 14, train loss: 13.503815496715381
+2020-12-01 14:19:52,145:INFO: Epoch: 14, dev loss: 557.4899920295267, f1 score: 0.7767658368751265
+2020-12-01 14:22:57,886:INFO: Epoch: 15, train loss: 14.316994330277144
+2020-12-01 14:23:09,592:INFO: Epoch: 15, dev loss: 547.4151907528149, f1 score: 0.7723250201126308
+2020-12-01 14:26:15,341:INFO: Epoch: 16, train loss: 13.024736234457185
+2020-12-01 14:26:27,058:INFO: Epoch: 16, dev loss: 573.4912154253791, f1 score: 0.7720986169573061
+2020-12-01 14:29:32,960:INFO: Epoch: 17, train loss: 14.048635973788723
+2020-12-01 14:29:44,685:INFO: Epoch: 17, dev loss: 601.0456300623276, f1 score: 0.7760649087221096
+2020-12-01 14:32:50,568:INFO: Epoch: 18, train loss: 10.434598733883092
+2020-12-01 14:33:02,267:INFO: Epoch: 18, dev loss: 647.2506112491383, f1 score: 0.7806464728603375
+2020-12-01 14:36:08,034:INFO: Epoch: 19, train loss: 9.375954152727285
+2020-12-01 14:36:19,727:INFO: Epoch: 19, dev loss: 666.4878414378446, f1 score: 0.7838441242135175
+2020-12-01 14:36:19,727:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:36:22,722:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:36:22,722:INFO: --------Save best model!--------
+2020-12-01 14:39:28,563:INFO: Epoch: 20, train loss: 10.752163367696328
+2020-12-01 14:39:40,227:INFO: Epoch: 20, dev loss: 649.8650171616498, f1 score: 0.7875584468387883
+2020-12-01 14:39:40,227:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:39:43,056:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:39:43,057:INFO: --------Save best model!--------
+2020-12-01 14:42:48,814:INFO: Epoch: 21, train loss: 8.023733988846883
+2020-12-01 14:43:00,510:INFO: Epoch: 21, dev loss: 709.5828857421875, f1 score: 0.7857720291026677
+2020-12-01 14:46:06,252:INFO: Epoch: 22, train loss: 7.294849477585393
+2020-12-01 14:46:17,964:INFO: Epoch: 22, dev loss: 695.2780169318704, f1 score: 0.7765656565656566
+2020-12-01 14:49:23,822:INFO: Epoch: 23, train loss: 7.566181478720687
+2020-12-01 14:49:35,584:INFO: Epoch: 23, dev loss: 719.2264565860523, f1 score: 0.7838283828382838
+2020-12-01 14:52:41,325:INFO: Epoch: 24, train loss: 7.22852365097197
+2020-12-01 14:52:53,021:INFO: Epoch: 24, dev loss: 778.3901609532974, f1 score: 0.7828210869122736
+2020-12-01 14:55:58,804:INFO: Epoch: 25, train loss: 6.50024410285572
+2020-12-01 14:56:10,658:INFO: Epoch: 25, dev loss: 737.0790333467371, f1 score: 0.7857576370625126
+2020-12-01 14:59:16,207:INFO: Epoch: 26, train loss: 4.421250972810752
+2020-12-01 14:59:27,914:INFO: Epoch: 26, dev loss: 722.8304981904871, f1 score: 0.7904781448799508
+2020-12-01 14:59:27,914:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 14:59:30,773:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 14:59:30,773:INFO: --------Save best model!--------
+2020-12-01 15:02:35,692:INFO: Epoch: 27, train loss: 3.737609607551751
+2020-12-01 15:02:47,413:INFO: Epoch: 27, dev loss: 768.0309645708869, f1 score: 0.7929838874158679
+2020-12-01 15:02:47,413:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 15:02:49,590:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 15:02:49,590:INFO: --------Save best model!--------
+2020-12-01 15:05:55,215:INFO: Epoch: 28, train loss: 3.3573529720306396
+2020-12-01 15:06:06,996:INFO: Epoch: 28, dev loss: 761.2072726978976, f1 score: 0.7882496940024479
+2020-12-01 15:09:12,609:INFO: Epoch: 29, train loss: 2.9233443898336327
+2020-12-01 15:09:24,303:INFO: Epoch: 29, dev loss: 768.9662201825311, f1 score: 0.7922369765066394
+2020-12-01 15:12:29,514:INFO: Epoch: 30, train loss: 2.781141443221089
+2020-12-01 15:12:41,174:INFO: Epoch: 30, dev loss: 816.4055005241843, f1 score: 0.7818070067609098
+2020-12-01 15:15:46,071:INFO: Epoch: 31, train loss: 2.7729429616393038
+2020-12-01 15:15:57,948:INFO: Epoch: 31, dev loss: 799.303887759938, f1 score: 0.7934358974358975
+2020-12-01 15:15:57,949:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 15:16:00,580:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 15:16:00,580:INFO: --------Save best model!--------
+2020-12-01 15:19:05,515:INFO: Epoch: 32, train loss: 2.1008847184700543
+2020-12-01 15:19:17,182:INFO: Epoch: 32, dev loss: 819.6164514878217, f1 score: 0.7883360522022839
+2020-12-01 15:22:22,737:INFO: Epoch: 33, train loss: 1.604712951694778
+2020-12-01 15:22:34,464:INFO: Epoch: 33, dev loss: 773.4332463881549, f1 score: 0.7908590083656396
+2020-12-01 15:25:40,003:INFO: Epoch: 34, train loss: 1.5516732569181486
+2020-12-01 15:25:51,674:INFO: Epoch: 34, dev loss: 741.5038120045382, f1 score: 0.7925370107483269
+2020-12-01 15:28:57,459:INFO: Epoch: 35, train loss: 0.7935247614045348
+2020-12-01 15:29:09,113:INFO: Epoch: 35, dev loss: 723.020263671875, f1 score: 0.7916666666666666
+2020-12-01 15:32:14,883:INFO: Epoch: 36, train loss: 1.0356213094377675
+2020-12-01 15:32:26,688:INFO: Epoch: 36, dev loss: 671.5889919505399, f1 score: 0.7934253246753247
+2020-12-01 15:35:32,511:INFO: Epoch: 37, train loss: 0.8806796309971573
+2020-12-01 15:35:44,282:INFO: Epoch: 37, dev loss: 644.9647221284754, f1 score: 0.7963265306122449
+2020-12-01 15:35:44,282:INFO: Configuration saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 15:35:46,408:INFO: Model weights saved in /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 15:35:46,408:INFO: --------Save best model!--------
+2020-12-01 15:38:52,184:INFO: Epoch: 38, train loss: 0.8647545037096483
+2020-12-01 15:39:03,965:INFO: Epoch: 38, dev loss: 642.024518181296, f1 score: 0.7962586417242781
+2020-12-01 15:42:09,843:INFO: Epoch: 39, train loss: 0.6671175940988874
+2020-12-01 15:42:21,551:INFO: Epoch: 39, dev loss: 646.3970830580768, f1 score: 0.788801976121861
+2020-12-01 15:45:27,274:INFO: Epoch: 40, train loss: 0.3546022220019854
+2020-12-01 15:45:39,022:INFO: Epoch: 40, dev loss: 634.860793169807, f1 score: 0.7917263977063281
+2020-12-01 15:48:44,927:INFO: Epoch: 41, train loss: 0.6181547460776351
+2020-12-01 15:48:56,625:INFO: Epoch: 41, dev loss: 637.3542767693015, f1 score: 0.7933647347941839
+2020-12-01 15:52:02,372:INFO: Epoch: 42, train loss: 0.6576380462142895
+2020-12-01 15:52:14,099:INFO: Epoch: 42, dev loss: 620.6429290771484, f1 score: 0.7934426229508196
+2020-12-01 15:55:19,556:INFO: Epoch: 43, train loss: 0.38948132102638977
+2020-12-01 15:55:31,258:INFO: Epoch: 43, dev loss: 617.4739137537339, f1 score: 0.7932869422840769
+2020-12-01 15:58:36,985:INFO: Epoch: 44, train loss: 0.41563916599789863
+2020-12-01 15:58:48,680:INFO: Epoch: 44, dev loss: 625.391580918256, f1 score: 0.7914285714285715
+2020-12-01 16:01:54,441:INFO: Epoch: 45, train loss: 0.43598857413817554
+2020-12-01 16:02:06,124:INFO: Epoch: 45, dev loss: 620.3849523207721, f1 score: 0.7912670883493164
+2020-12-01 16:05:11,876:INFO: Epoch: 46, train loss: 0.4514781335006059
+2020-12-01 16:05:23,634:INFO: Epoch: 46, dev loss: 621.4357506247128, f1 score: 0.7937997144605344
+2020-12-01 16:08:29,512:INFO: Epoch: 47, train loss: 0.43516185496113086
+2020-12-01 16:08:41,211:INFO: Epoch: 47, dev loss: 621.5245433134191, f1 score: 0.7937091503267976
+2020-12-01 16:08:41,211:INFO: Best val f1: 0.7963265306122449
+2020-12-01 16:08:41,211:INFO: Training Finished!
+2020-12-01 16:08:41,247:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-12-01 16:08:41,247:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-12-01 16:08:41,247:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-12-01 16:08:41,247:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-12-01 16:08:41,248:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-12-01 16:08:41,248:INFO: loading file None
+2020-12-01 16:08:41,248:INFO: loading file None
+2020-12-01 16:08:41,248:INFO: loading file None
+2020-12-01 16:08:43,084:INFO: --------Dataset Build!--------
+2020-12-01 16:08:43,085:INFO: --------Get Data-loader!--------
+2020-12-01 16:08:43,090:INFO: loading configuration file /home/xiaheming/workspace/BERT-NER/experiments/clue/config.json
+2020-12-01 16:08:43,090:INFO: Model config {
+  "attention_probs_dropout_prob": 0.1,
+  "directionality": "bidi",
+  "finetuning_task": null,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 1024,
+  "initializer_range": 0.02,
+  "intermediate_size": 4096,
+  "is_decoder": false,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "num_attention_heads": 16,
+  "num_hidden_layers": 24,
+  "num_labels": 31,
+  "output_attentions": false,
+  "output_hidden_states": false,
+  "output_past": true,
+  "pooler_fc_size": 768,
+  "pooler_num_attention_heads": 12,
+  "pooler_num_fc_layers": 3,
+  "pooler_size_per_head": 128,
+  "pooler_type": "first_token_transform",
+  "pruned_heads": {},
+  "torchscript": false,
+  "type_vocab_size": 2,
+  "use_bfloat16": false,
+  "vocab_size": 21128
+}
+
+2020-12-01 16:08:43,091:INFO: loading weights file /home/xiaheming/workspace/BERT-NER/experiments/clue/pytorch_model.bin
+2020-12-01 16:08:49,960:INFO: --------Load model from /home/xiaheming/workspace/BERT-NER/experiments/clue/--------
+2020-12-01 16:08:49,961:INFO: Model name 'pretrained_bert_models/bert-base-chinese/' not found in model shortcut name list (bert-base-uncased, bert-large-uncased, bert-base-cased, bert-large-cased, bert-base-multilingual-uncased, bert-base-multilingual-cased, bert-base-chinese, bert-base-german-cased, bert-large-uncased-whole-word-masking, bert-large-cased-whole-word-masking, bert-large-uncased-whole-word-masking-finetuned-squad, bert-large-cased-whole-word-masking-finetuned-squad, bert-base-cased-finetuned-mrpc, bert-base-german-dbmdz-cased, bert-base-german-dbmdz-uncased). Assuming 'pretrained_bert_models/bert-base-chinese/' is a path or url to a directory containing tokenizer files.
+2020-12-01 16:08:49,961:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/added_tokens.json. We won't load it.
+2020-12-01 16:08:49,961:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/special_tokens_map.json. We won't load it.
+2020-12-01 16:08:49,961:INFO: Didn't find file pretrained_bert_models/bert-base-chinese/tokenizer_config.json. We won't load it.
+2020-12-01 16:08:49,961:INFO: loading file pretrained_bert_models/bert-base-chinese/vocab.txt
+2020-12-01 16:08:49,961:INFO: loading file None
+2020-12-01 16:08:49,961:INFO: loading file None
+2020-12-01 16:08:49,961:INFO: loading file None
+2020-12-01 16:09:06,320:INFO: --------Bad Cases reserved !--------
+2020-12-01 16:09:06,393:INFO: test loss: 642.8179375784738, f1 score: 0.7934279789440102
+2020-12-01 16:09:06,393:INFO: f1 score of address: 0.6410596026490066
+2020-12-01 16:09:06,394:INFO: f1 score of book: 0.8093645484949833
+2020-12-01 16:09:06,394:INFO: f1 score of company: 0.8010403120936281
+2020-12-01 16:09:06,394:INFO: f1 score of game: 0.8373590982286634
+2020-12-01 16:09:06,394:INFO: f1 score of government: 0.8313725490196079
+2020-12-01 16:09:06,394:INFO: f1 score of movie: 0.8310810810810811
+2020-12-01 16:09:06,394:INFO: f1 score of name: 0.8743509865005192
+2020-12-01 16:09:06,394:INFO: f1 score of organization: 0.8032345013477089
+2020-12-01 16:09:06,394:INFO: f1 score of position: 0.7894736842105263
+2020-12-01 16:09:06,394:INFO: f1 score of scene: 0.7136363636363637

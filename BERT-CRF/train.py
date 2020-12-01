@@ -1,11 +1,12 @@
 import torch
+import logging
 import torch.nn as nn
-import numpy as np
 from tqdm import tqdm
 
 import config
 from model import BertNER
-from metrics import f1_score
+from metrics import f1_score, bad_case
+from transformers import BertTokenizer
 
 
 def train_epoch(train_loader, model, optimizer, scheduler, epoch):
@@ -28,7 +29,8 @@ def train_epoch(train_loader, model, optimizer, scheduler, epoch):
         # performs updates using calculated gradients
         optimizer.step()
         scheduler.step()
-    print("Epoch: ", epoch, ", train loss: ", float(train_losses) / len(train_loader))
+    train_loss = float(train_losses) / len(train_loader)
+    logging.info("Epoch: {}, train loss: {}".format(epoch, train_loss))
 
 
 def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
@@ -37,20 +39,20 @@ def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
     if model_dir is not None and config.load_before:
         model = BertNER.from_pretrained(model_dir)
         model.to(config.device)
-        print("--------Load model from ", model_dir, "--------")
+        logging.info("--------Load model from {}--------".format(model_dir))
     best_val_f1 = 0.0
     patience_counter = 0
     # start training
     for epoch in range(1, config.epoch_num + 1):
         train_epoch(train_loader, model, optimizer, scheduler, epoch)
-        val_metrics = evaluate(dev_loader, model)
+        val_metrics = evaluate(dev_loader, model, mode='dev')
         val_f1 = val_metrics['f1']
-        print("Epoch: ", epoch, ", dev loss: ", val_metrics['loss'], ", f1 score: ", val_f1)
+        logging.info("Epoch: {}, dev loss: {}, f1 score: {}".format(epoch, val_metrics['loss'], val_f1))
         improve_f1 = val_f1 - best_val_f1
         if improve_f1 > 1e-5:
             best_val_f1 = val_f1
             model.save_pretrained(model_dir)
-            print("--------Save best model!--------")
+            logging.info("--------Save best model!--------")
             if improve_f1 < config.patience:
                 patience_counter += 1
             else:
@@ -59,23 +61,28 @@ def train(train_loader, dev_loader, model, optimizer, scheduler, model_dir):
             patience_counter += 1
         # Early stopping and logging best f1
         if (patience_counter >= config.patience_num and epoch > config.min_epoch_num) or epoch == config.epoch_num:
-            print("Best val f1: ", best_val_f1)
+            logging.info("Best val f1: {}".format(best_val_f1))
             break
-    print("Training Finished!")
+    logging.info("Training Finished!")
 
 
-def evaluate(dev_loader, model):
+def evaluate(dev_loader, model, mode='dev'):
     # set model to evaluation mode
     model.eval()
-
+    if mode == 'test':
+        tokenizer = BertTokenizer.from_pretrained(config.bert_model, do_lower_case=True, skip_special_tokens=True)
     id2label = config.id2label
     true_tags = []
     pred_tags = []
+    sent_data = []
     dev_losses = 0
 
     with torch.no_grad():
         for idx, batch_samples in enumerate(dev_loader):
             batch_data, batch_token_starts, batch_tags = batch_samples
+            if mode == 'test':
+                sent_data.extend([[tokenizer.convert_ids_to_tokens(idx.item()) for idx in indices
+                                   if (idx.item() > 0 and idx.item() != 101)] for indices in batch_data])
             batch_masks = batch_data.gt(0)  # get padding mask, gt(x): get index greater than x
             label_masks = batch_tags.gt(-1)  # get padding mask, gt(x): get index greater than x
             # compute model output and loss
@@ -94,10 +101,32 @@ def evaluate(dev_loader, model):
             true_tags.extend([[id2label.get(idx) for idx in indices if idx > -1] for indices in batch_tags])
 
     assert len(pred_tags) == len(true_tags)
+    if mode == 'test':
+        assert len(sent_data) == len(true_tags)
 
     # logging loss, f1 and report
     metrics = {}
-    f1 = f1_score(true_tags, pred_tags)
+    if mode == 'dev':
+        f1 = f1_score(true_tags, pred_tags, mode)
+        metrics['f1'] = f1
+    else:
+        bad_case(true_tags, pred_tags, sent_data)
+        f1_labels, f1 = f1_score(true_tags, pred_tags, mode)
+        metrics['f1_labels'] = f1_labels
+        metrics['f1'] = f1
     metrics['loss'] = float(dev_losses) / len(dev_loader)
-    metrics['f1'] = f1
     return metrics
+
+
+if __name__ == "__main__":
+    a = [101, 679, 6814, 8024, 517, 2208, 3360, 2208, 1957, 518, 7027, 4638,
+         1957, 4028, 1447, 3683, 6772, 4023, 778, 8024, 6844, 1394, 3173, 4495,
+         807, 4638, 6225, 830, 5408, 8024, 5445, 3300, 1126, 1767, 3289, 3471,
+         4413, 4638, 2767, 738, 976, 4638, 3683, 6772, 1962, 511, 0, 0,
+         0, 0, 0]
+    t = torch.tensor(a, dtype=torch.long)
+    tokenizer = BertTokenizer.from_pretrained(config.bert_model, do_lower_case=True, skip_special_tokens=True)
+    word = tokenizer.convert_ids_to_tokens(t[1].item())
+    sent = tokenizer.decode(t.tolist())
+    print(word)
+    print(sent)
