@@ -8,6 +8,8 @@
 
 本项目BERT-base-X部分的代码编写思路参考 [lemonhu](https://github.com/lemonhu/NER-BERT-pytorch) 。
 
+项目说明参考知乎文章：[用BERT做NER？教你用PyTorch轻松入门Roberta！](https://zhuanlan.zhihu.com/p/346828049)
+
 ## Dataset
 
 实验数据来自[CLUENER2020](https://github.com/CLUEbenchmark/CLUENER2020)。这是一个中文细粒度命名实体识别数据集，是基于清华大学开源的文本分类数据集THUCNEWS，选出部分数据进行细粒度标注得到的。该数据集的训练集、验证集和测试集的大小分别为10748，1343，1345，平均句子长度37.4字，最长50字。由于测试集不直接提供，考虑到leaderboard上提交次数有限，**本项目使用CLUENER2020的验证集作为模型表现评判的测试集**。
