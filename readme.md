@@ -83,6 +83,10 @@ pip install -r requirements.txt
 
 **chinese_roberta_wwm_large模型：**[下载地址](https://github.com/ymcui/Chinese-BERT-wwm#%E4%BD%BF%E7%94%A8%E5%BB%BA%E8%AE%AE) 。
 
+如果觉得麻烦，pytorch版本的上述模型可以通过下方**网盘链接**直接获取😊：
+
+链接: https://pan.baidu.com/s/1rhleLywF_EuoxB2nmA212w  密码: isc5
+
 ## Results
 
 各个模型在数据集上的结果（f1 score）如下表所示：（Roberta均指RoBERTa-wwm-ext-large模型）
